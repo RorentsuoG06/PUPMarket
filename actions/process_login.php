@@ -14,18 +14,27 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 
-$username = trim($_POST["username"] ?? "");
+$email = strtolower(trim($_POST["email"] ?? ""));
+$studentNumber = trim($_POST["student_number"] ?? "");
 $password = $_POST["password"] ?? "";
 
 
-if ($username === "" || $password === "") {
+if ($email === "" || $studentNumber === "" || $password === "") {
     header("Location: ../login.php?status=empty");
+    exit;
+}
+
+if (
+    !filter_var($email, FILTER_VALIDATE_EMAIL) ||
+    !str_ends_with($email, "@iskolarngbayan.pup.edu.ph")
+) {
+    header("Location: ../login.php?status=email");
     exit;
 }
 
 $query = "SELECT user_id, full_name, username, password
           FROM users
-          WHERE username = ? OR email = ?
+          WHERE email = ? AND student_number = ?
           LIMIT 1";
 
 
@@ -37,13 +46,11 @@ if (!$stmt) {
 }
 
 
-/* Use the entered username/email for both parameters */
-
 mysqli_stmt_bind_param(
     $stmt,
     "ss",
-    $username,
-    $username
+    $email,
+    $studentNumber
 );
 
 mysqli_stmt_execute($stmt);

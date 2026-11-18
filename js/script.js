@@ -1,923 +1,456 @@
-/* PUPMARKET JAVASCRIPT */
+(function () {
+    const defaultProducts = [
+        {
+            id: 1,
+            name: "Data Structures in Java Book",
+            price: 550,
+            category: "Books",
+            condition: "Good",
+            description: "Programming book with minimal highlights.",
+            seller: "Valora Mae Lagarnia",
+            image: "images/datastructuresinjava.jpg"
+        },
+        {
+            id: 2,
+            name: "Modern Database Management Book",
+            price: 780,
+            category: "Books",
+            condition: "Good",
+            description: "Database management textbook useful for studying database concepts and systems.",
+            seller: "Valora Mae Lagarnia",
+            image: "images/mdm.jpg"
+        },
+        {
+            id: 3,
+            name: "OOP Reviewer",
+            price: 50,
+            category: "Books",
+            condition: "Like New",
+            description: "Printed reviewer for 1st semester midterm exam.",
+            seller: "Cadey Torralba",
+            image: "images/oopreviewer.jpg"
+        },
+        {
+            id: 4,
+            name: "PUPBC Uniform Set - Women",
+            price: 800,
+            category: "Uniforms",
+            condition: "Like New",
+            description: "Large Size. Uniform set with pants. Contact me for the other details.",
+            seller: "Jessica Mananes",
+            image: "images/unifset.jpg"
+        },
+        {
+            id: 5,
+            name: "PE Uniform Top only",
+            price: 320,
+            category: "Uniforms",
+            condition: "Good",
+            description: "Size medium. All goods pa.",
+            seller: "Jeremy Guillermo",
+            image: "images/peunif.jpg"
+        },
+        {
+            id: 6,
+            name: "CASIO Scientific Calculator",
+            price: 700,
+            category: "Electronics",
+            condition: "Good",
+            description: "Scientific calculator in good working condition, suitable for school and mathematical use.",
+            seller: "PUPMarket Seller",
+            image: "images/calc.jpg"
+        },
+        {
+            id: 7,
+            name: "Logitech Wireless Mouse",
+            price: 680,
+            category: "Electronics",
+            condition: "Good",
+            description: "Wireless mouse in good working condition. Suitable for laptops, computers, and everyday school use.",
+            seller: "PUPMarket Seller",
+            image: "images/mouse.jpg"
+        },
+        {
+            id: 8,
+            name: "1 Ream A4 Hard Copy Bond paper",
+            price: 280,
+            category: "School Supplies",
+            condition: "New",
+            description: "1 ream of A4 bond paper containing 500 sheets. Suitable for printing school requirements and documents.",
+            seller: "PUPMarket Seller",
+            image: "images/bndpaper.jpg"
+        },
+        {
+            id: 9,
+            name: "Mica Paper Set",
+            price: 280,
+            category: "School Supplies",
+            condition: "New",
+            description: "Brand new mica paper set suitable for school projects, covers, and other printing needs.",
+            seller: "PUPMarket Seller",
+            image: "images/mica.jpg"
+        },
+        {
+            id: 10,
+            name: "Homemade Cookies",
+            price: 10,
+            category: "Others",
+            condition: "New",
+            description: "Freshly made homemade cookies available in Matcha, Choco, and Red Velvet flavors. ₱10 per piece.",
+            seller: "Miyuki Espiritu",
+            image: "images/cookie.jpg"
+        }
+    ];
 
+    let products = [];
 
-/* SAMPLE PRODUCTS */
-
-const defaultProducts = [
-
-    {
-        id: 1,
-        name: "Data Structures in Java Book",
-        price: 550,
-        category: "Books",
-        condition: "Good",
-        description: "Programming book with minimal highlights.",
-        seller: "Valora Mae Lagarnia",
-        image: "images/datastructuresinjava.jpg"
-    },
-
-    {
-        id: 2,
-        name: "Modern Database Management Book",
-        price: 780,
-        category: "Books",
-        condition: "Good",
-        description: "Database management textbook useful for studying database concepts and systems.",
-        seller: "Valora Mae Lagarnia",
-        image: "images/mdm.jpg"
-    },
-
-    {
-        id: 3,
-        name: "OOP Reviewer",
-        price: 50,
-        category: "Books",
-        condition: "Like New",
-        description: "Printed reviewer for 1st semester midterm exam.",
-        seller: "Cadey Torralba",
-        image: "images/oopreviewer.jpg"
-    },
-
-    {
-        id: 4,
-        name: "PUPBC Uniform Set - Women",
-        price: 800,
-        category: "Uniforms",
-        condition: "Like New",
-        description: "Large Size. Uniform set with pants. Contact me for the other details.",
-        seller: "Jessica Mananes",
-        image: "images/unifset.jpg"
-    },
-
-    {
-        id: 5,
-        name: "PE Uniform Top only",
-        price: 320,
-        category: "Uniforms",
-        condition: "Good",
-        description: "Size medium. All goods pa.",
-        seller: "Jeremy Guillermo",
-        image: "images/peunif.jpg"
-    },
-
-    {
-        id: 6,
-        name: "CASIO Scientific Calculator",
-        price: 700,
-        category: "Electronics",
-        condition: "Good",
-        description: "Scientific calculator in good working condition, suitable for school and mathematical use.",
-        seller: "PUPMarket Seller",
-        image: "images/calc.jpg"
-    },
-
-    {
-        id: 7,
-        name: "Logitech Wireless Mouse",
-        price: 680,
-        category: "Electronics",
-        condition: "Good",
-        description: "Wireless mouse in good working condition. Suitable for laptops, computers, and everyday school use.",
-        seller: "PUPMarket Seller",
-        image: "images/mouse.jpg"
-    },
-
-    {
-        id: 8,
-        name: "1 Ream A4 Hard Copy Bond paper",
-        price: 280,
-        category: "School Supplies",
-        condition: "New",
-        description: "1 ream of A4 bond paper containing 500 sheets. Suitable for printing school requirements and documents.",
-        seller: "PUPMarket Seller",
-        image: "images/bndpaper.jpg"
-    },
-
-    {
-        id: 9,
-        name: "Mica Paper Set",
-        price: 280,
-        category: "School Supplies",
-        condition: "New",
-        description: "Brand new mica paper set suitable for school projects, covers, and other printing needs.",
-        seller: "PUPMarket Seller",
-        image: "images/mica.jpg"
-    },
-
-    {
-        id: 10,
-        name: "Homemade Cookies",
-        price: 10,
-        category: "Others",
-        condition: "New",
-        description: "Freshly made homemade cookies available in Matcha, Choco, and Red Velvet flavors. ₱10 per piece.",
-        seller: "Miyuki Espiritu",
-        image: "images/cookie.jpg"
-    }
-
-];
-
-
-/* GET PRODUCTS FROM LOCAL STORAGE */
-
-function getProducts() {
-
-    const savedProducts =
-        localStorage.getItem("pupmarketProducts");
-
-    if (savedProducts) {
-        return JSON.parse(savedProducts);
-    }
-
-    localStorage.setItem(
-        "pupmarketProducts",
-        JSON.stringify(defaultProducts)
-    );
-
-    return defaultProducts;
-}
-
-let products = getProducts();
-
-
-/* SAVE PRODUCTS */
-
-function saveProducts() {
-
-    localStorage.setItem(
-        "pupmarketProducts",
-        JSON.stringify(products)
-    );
-}
-
-
-function imageError(imageElement) {
-    imageElement.src = "images/no-image.jpg";
-}
-
-
-/* DISPLAY PRODUCTS */
-
-function displayProducts(productList) {
-
-    const container =
-        document.getElementById("productContainer");
-
-    if (!container) {
-        return;
-    }
-
-    container.innerHTML = "";
-
-    const noResults =
-        document.getElementById("noResults");
-
-    if (productList.length === 0) {
-
-        if (noResults) {
-            noResults.classList.remove("d-none");
+    function getProducts() {
+        const savedProducts = localStorage.getItem("pupmarketProducts");
+        if (savedProducts) {
+            return JSON.parse(savedProducts);
         }
 
-        return;
+        localStorage.setItem("pupmarketProducts", JSON.stringify(defaultProducts));
+        return defaultProducts;
     }
 
-    if (noResults) {
-        noResults.classList.add("d-none");
+    function saveProducts() {
+        localStorage.setItem("pupmarketProducts", JSON.stringify(products));
     }
 
-    productList.forEach(function(product) {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "col-md-6 col-lg-3";
-
-        card.innerHTML = `
-            <div class="card product-card h-100">
-
-                <img
-                    src="${product.image}"
-                    class="product-image"
-                    alt="${escapeHTML(product.name)}"
-                    onerror="imageError(this)"
-                >
-
-                <div class="card-body">
-
-                    <span class="badge bg-secondary">
-                        ${escapeHTML(product.category)}
-                    </span>
-
-                    <h5 class="card-title mt-2">
-                        ${escapeHTML(product.name)}
-                    </h5>
-
-                    <h5 class="text-pup">
-                        ₱${Number(product.price).toLocaleString()}
-                    </h5>
-
-                    <p class="small text-muted">
-                        ${escapeHTML(product.condition)}
-                        condition
-                    </p>
-
-                    <button
-                        class="btn btn-pup w-100"
-                        onclick="showProductById(${product.id})">
-
-                        View Details
-
-                    </button>
-
-                </div>
-
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
-}
-
-
-/* 
-   DISPLAY FEATURED PRODUCTS ON HOME
-    */
-
-function displayFeaturedProducts() {
-
-    const container =
-        document.getElementById("featuredProducts");
-
-    if (!container) {
-        return;
-    }
-
-    container.innerHTML = "";
-
-    const featured =
-        products.slice(0, 4);
-
-    featured.forEach(function(product) {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "col-md-6 col-lg-3";
-
-        card.innerHTML = `
-            <div class="card product-card h-100">
-
-                <img
-                    src="${product.image}"
-                    class="product-image"
-                    alt="${escapeHTML(product.name)}"
-                    onerror="imageError(this)"
-                >
-
-                <div class="card-body">
-
-                    <span class="badge bg-secondary">
-                        ${escapeHTML(product.category)}
-                    </span>
-
-                    <h5 class="card-title mt-2">
-                        ${escapeHTML(product.name)}
-                    </h5>
-
-                    <h5 class="text-pup">
-                        ₱${Number(product.price).toLocaleString()}
-                    </h5>
-
-                    <p class="small text-muted">
-                        ${escapeHTML(product.condition)}
-                        condition
-                    </p>
-
-                    <button
-                        class="btn btn-pup w-100"
-                        onclick="showProductById(${product.id})">
-
-                        View Details
-
-                    </button>
-
-                </div>
-
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
-}
-
-
-/* 
-   ESCAPE HTML
-    */
-
-function escapeHTML(value) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = value;
-
-    return div.innerHTML;
-}
-
-
-/* SHOW PRODUCT */
-
-function showProductById(id) {
-
-    const product =
-        products.find(
-            item => item.id === id
-        );
-
-    if (!product) {
-        return;
-    }
-
-    document.getElementById("productName").textContent =
-        product.name;
-
-    document.getElementById("productPrice").textContent =
-        "₱" +
-        Number(product.price).toLocaleString();
-
-    document.getElementById("productCategory").textContent =
-        product.category;
-
-    document.getElementById("productCondition").textContent =
-        product.condition;
-
-    document.getElementById("productDescription").textContent =
-        product.description;
-
-    document.getElementById("productSeller").textContent =
-        product.seller;
-
-    const image =
-        document.getElementById("productImage");
-
-    if (image) {
-
-        image.src = product.image;
-
-        image.onerror =
-            function() {
-                imageError(image);
-            };
-    }
-
-    const modalElement =
-        document.getElementById("productModal");
-
-    if (modalElement) {
-
-        const modal =
-            new bootstrap.Modal(modalElement);
-
-        modal.show();
-    }
-}
-
-
-/* 
-   SEARCH + FILTER
-    */
-
-function filterProducts() {
-
-    const searchInput =
-        document.getElementById("searchInput");
-
-    const categoryFilter =
-        document.getElementById("categoryFilter");
-
-    if (!searchInput || !categoryFilter) {
-        return;
-    }
-
-    const searchValue =
-        searchInput.value
-            .toLowerCase()
-            .trim();
-
-    const categoryValue =
-        categoryFilter.value;
-
-    let filteredProducts =
-        products.filter(function(product) {
-
-            const matchesSearch =
-                product.name
-                    .toLowerCase()
-                    .includes(searchValue);
-
-            const matchesCategory =
-                categoryValue === "all" ||
-                product.category === categoryValue;
-
-            return (
-                matchesSearch &&
-                matchesCategory
-            );
+    function createProductCard(product) {
+        const column = document.createElement("div");
+        column.className = "col-6 col-lg-3";
+
+        const card = document.createElement("article");
+        card.className = "card product-card h-100";
+
+        const image = document.createElement("img");
+        image.className = "product-image";
+        image.alt = product.name;
+        image.src = product.image || "images/no-image.jpg";
+        image.addEventListener("error", function useFallback() {
+            image.removeEventListener("error", useFallback);
+            image.src = "images/no-image.jpg";
         });
 
-    sortProducts(filteredProducts);
-}
+        const body = document.createElement("div");
+        body.className = "card-body";
 
+        const category = document.createElement("span");
+        category.className = "badge";
+        category.textContent = product.category;
 
-/* SORT PRODUCTS */
+        const title = document.createElement("h2");
+        title.className = "card-title";
+        title.textContent = product.name;
 
-function sortProducts(productList) {
+        const price = document.createElement("p");
+        price.className = "product-price";
+        price.textContent = `₱${Number(product.price).toLocaleString()}`;
 
-    const sortFilter =
-        document.getElementById("sortFilter");
+        const condition = document.createElement("p");
+        condition.className = "small text-muted product-condition";
+        condition.textContent = `${product.condition} condition`;
 
-    if (!sortFilter) {
+        const button = document.createElement("button");
+        button.className = "btn btn-pup w-100";
+        button.type = "button";
+        button.dataset.productId = product.id;
+        button.textContent = "View Details";
 
-        displayProducts(productList);
-        return;
+        body.append(category, title, price, condition, button);
+        card.append(image, body);
+        column.append(card);
+        return column;
     }
 
-    const sortValue =
-        sortFilter.value;
-
-    if (sortValue === "low") {
-
-        productList.sort(
-            (a, b) =>
-                Number(a.price) -
-                Number(b.price)
-        );
-
-    } else if (sortValue === "high") {
-
-        productList.sort(
-            (a, b) =>
-                Number(b.price) -
-                Number(a.price)
-        );
-
-    } else if (sortValue === "name") {
-
-        productList.sort(
-            (a, b) =>
-                a.name.localeCompare(
-                    b.name
-                )
-        );
-    }
-
-    displayProducts(productList);
-}
-
-
-/* IMAGE PREVIEW */
-
-function setupImagePreview() {
-
-    const imageInput =
-        document.getElementById("itemImage");
-
-    const preview =
-        document.getElementById("imagePreview");
-
-    const previewContainer =
-        document.getElementById(
-            "imagePreviewContainer"
-        );
-
-    if (!imageInput ||
-        !preview ||
-        !previewContainer) {
-
-        return;
-    }
-
-    imageInput.addEventListener(
-        "change",
-        function() {
-
-            const file =
-                imageInput.files[0];
-
-            if (!file) {
-
-                previewContainer
-                    .classList
-                    .add("d-none");
-
-                return;
-            }
-
-            if (!file.type.startsWith("image/")) {
-
-                alert(
-                    "Please select an image file."
-                );
-
-                imageInput.value = "";
-
-                return;
-            }
-
-            const reader =
-                new FileReader();
-
-            reader.onload =
-                function(event) {
-
-                    preview.src =
-                        event.target.result;
-
-                    previewContainer
-                        .classList
-                        .remove("d-none");
-                };
-
-            reader.readAsDataURL(file);
+    function displayProducts(productList) {
+        const container = document.getElementById("productContainer");
+        if (!container) {
+            return;
         }
-    );
-}
 
+        container.replaceChildren();
+        const noResults = document.getElementById("noResults");
+        noResults?.classList.toggle("d-none", productList.length > 0);
 
-/* POST ITEM */
-
-function setupPostItemForm() {
-
-    const form =
-        document.getElementById("postItemForm");
-
-    if (!form) {
-        return;
+        productList.forEach(function (product) {
+            container.append(createProductCard(product));
+        });
     }
 
-    form.addEventListener(
-        "submit",
-        function(event) {
-
-            event.preventDefault();
-
-            const name =
-                document.getElementById("itemName")
-                    .value.trim();
-
-            const category =
-                document.getElementById("itemCategory")
-                    .value;
-
-            const price =
-                document.getElementById("itemPrice")
-                    .value.trim();
-
-            const condition =
-                document.getElementById("itemCondition")
-                    .value;
-
-            const description =
-                document.getElementById("itemDescription")
-                    .value.trim();
-
-            const seller =
-                document.getElementById("sellerName")
-                    .value.trim();
-
-            if (
-                !name ||
-                !category ||
-                !price ||
-                !condition ||
-                !description ||
-                !seller
-            ) {
-
-                alert(
-                    "Please fill in all required fields."
-                );
-
-                return;
-            }
-
-            const numericPrice =
-                Number(price);
-
-            if (
-                !Number.isFinite(numericPrice) ||
-                numericPrice <= 0
-            ) {
-
-                alert(
-                    "Price must be greater than 0."
-                );
-
-                return;
-            }
-
-            const imageInput =
-                document.getElementById("itemImage");
-
-            const file =
-                imageInput.files[0];
-
-            if (!file) {
-
-                alert(
-                    "Please upload a product photo."
-                );
-
-                return;
-            }
-
-            if (
-                file.size >
-                2 * 1024 * 1024
-            ) {
-
-                alert(
-                    "Please choose an image smaller than 2MB."
-                );
-
-                return;
-            }
-
-            const reader =
-                new FileReader();
-
-            reader.onload =
-                function(event) {
-
-                    const newProduct = {
-
-                        id: Date.now(),
-
-                        name: name,
-
-                        price: numericPrice,
-
-                        category: category,
-
-                        condition: condition,
-
-                        description: description,
-
-                        seller: seller,
-
-                        image: event.target.result
-                    };
-
-                    products.unshift(
-                        newProduct
-                    );
-
-                    saveProducts();
-
-                    displayProducts(
-                        products
-                    );
-
-                    displayFeaturedProducts();
-
-                    form.reset();
-
-                    const previewContainer =
-                        document.getElementById(
-                            "imagePreviewContainer"
-                        );
-
-                    if (previewContainer) {
-
-                        previewContainer
-                            .classList
-                            .add("d-none");
-                    }
-
-                    const modalElement =
-                        document.getElementById(
-                            "postItemModal"
-                        );
-
-                    const modal =
-                        bootstrap.Modal
-                            .getInstance(
-                                modalElement
-                            );
-
-                    if (modal) {
-                        modal.hide();
-                    }
-
-                    alert(
-                        "Your item has been successfully posted!"
-                    );
-
-                    if (
-                        window.location.pathname
-                            .includes("index.php")
-                    ) {
-
-                        setTimeout(
-                            function() {
-
-                                window.location.href =
-                                    "products.php";
-
-                            },
-                            500
-                        );
-                    }
-                };
-
-            reader.readAsDataURL(file);
+    function displayFeaturedProducts() {
+        const container = document.getElementById("featuredProducts");
+        if (!container) {
+            return;
         }
-    );
-}
 
-
-/* CONTACT SELLER BUTTON */
-
-function setupContactSellerButton() {
-
-    const button =
-        document.getElementById(
-            "contactSellerBtn"
-        );
-
-    if (!button) {
-        return;
+        container.replaceChildren();
+        products.slice(0, 4).forEach(function (product) {
+            container.append(createProductCard(product));
+        });
     }
 
-    button.addEventListener(
-        "click",
-        function() {
+    function showProductById(id) {
+        const product = products.find((item) => String(item.id) === String(id));
+        if (!product) {
+            return;
+        }
 
+        const productName = document.getElementById("productName");
+        const productPrice = document.getElementById("productPrice");
+        const productCategory = document.getElementById("productCategory");
+        const productCondition = document.getElementById("productCondition");
+        const productDescription = document.getElementById("productDescription");
+        const productSeller = document.getElementById("productSeller");
+        const image = document.getElementById("productImage");
+        const modalElement = document.getElementById("productModal");
+
+        if (!productName || !productPrice || !productCategory || !productCondition ||
+            !productDescription || !productSeller || !image || !modalElement) {
+            return;
+        }
+
+        productName.textContent = product.name;
+        productPrice.textContent = `₱${Number(product.price).toLocaleString()}`;
+        productCategory.textContent = product.category;
+        productCondition.textContent = product.condition;
+        productDescription.textContent = product.description;
+        productSeller.textContent = product.seller;
+        image.src = product.image || "images/no-image.jpg";
+        image.onerror = function () {
+            image.onerror = null;
+            image.src = "images/no-image.jpg";
+        };
+
+        bootstrap.Modal.getOrCreateInstance(modalElement).show();
+    }
+
+    function filterProducts() {
+        const searchInput = document.getElementById("searchInput");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const sortFilter = document.getElementById("sortFilter");
+
+        if (!searchInput || !categoryFilter) {
+            return;
+        }
+
+        const searchValue = searchInput.value.toLowerCase().trim();
+        const categoryValue = categoryFilter.value;
+
+        const filteredProducts = products.filter(function (product) {
+            const matchesSearch = product.name.toLowerCase().includes(searchValue);
+            const matchesCategory =
+                categoryValue === "all" || product.category === categoryValue;
+            return matchesSearch && matchesCategory;
+        });
+
+        if (sortFilter?.value === "low") {
+            filteredProducts.sort((a, b) => Number(a.price) - Number(b.price));
+        } else if (sortFilter?.value === "high") {
+            filteredProducts.sort((a, b) => Number(b.price) - Number(a.price));
+        } else if (sortFilter?.value === "name") {
+            filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        displayProducts(filteredProducts);
+    }
+
+    function setupProductFeatures() {
+        const productContainer = document.getElementById("productContainer");
+        const featuredContainer = document.getElementById("featuredProducts");
+
+        if (!productContainer && !featuredContainer) {
+            return;
+        }
+
+        products = getProducts();
+        displayProducts(products);
+        displayFeaturedProducts();
+
+        const searchInput = document.getElementById("searchInput");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const sortFilter = document.getElementById("sortFilter");
+
+        searchInput?.addEventListener("input", filterProducts);
+        categoryFilter?.addEventListener("change", filterProducts);
+        sortFilter?.addEventListener("change", filterProducts);
+
+        const category = new URLSearchParams(window.location.search).get("category");
+        if (category && categoryFilter) {
+            categoryFilter.value = category;
+            filterProducts();
+        }
+
+        document.addEventListener("click", function (event) {
+            const button = event.target.closest("[data-product-id]");
+            if (button) {
+                showProductById(button.dataset.productId);
+            }
+        });
+
+        document.getElementById("contactSellerBtn")?.addEventListener("click", function () {
             alert(
                 "Please contact the seller through the information provided.\n\n" +
                 "Note: This is a draft project. The messaging feature will be added in the next update."
             );
-        }
-    );
-}
-
-
-/* CONTACT FORM CLIENT VALIDATION */
-
-function setupContactForm() {
-
-    const form =
-        document.getElementById("contactForm");
-
-    if (!form) {
-        return;
+        });
     }
 
-    form.addEventListener(
-        "submit",
-        function(event) {
+    function setupItemListing() {
+        const imageInput = document.getElementById("itemImage");
+        const preview = document.getElementById("imagePreview");
+        const previewContainer = document.getElementById("imagePreviewContainer");
 
-            const name =
-                form.querySelector('[name="name"]')
-                    .value.trim();
+        if (imageInput && preview && previewContainer) {
+            imageInput.addEventListener("change", function () {
+                const file = imageInput.files[0];
+                if (!file) {
+                    previewContainer.classList.add("d-none");
+                    return;
+                }
 
-            const email =
-                form.querySelector('[name="email"]')
-                    .value.trim();
+                if (!file.type.startsWith("image/")) {
+                    alert("Please select an image file.");
+                    imageInput.value = "";
+                    previewContainer.classList.add("d-none");
+                    return;
+                }
 
-            const subject =
-                form.querySelector('[name="subject"]')
-                    .value.trim();
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
+                    previewContainer.classList.remove("d-none");
+                };
+                reader.readAsDataURL(file);
+            });
+        }
 
-            const message =
-                form.querySelector('[name="message"]')
-                    .value.trim();
+        const form = document.getElementById("postItemForm");
+        if (!form) {
+            return;
+        }
 
-            if (
-                !name ||
-                !email ||
-                !subject ||
-                !message
-            ) {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
 
-                event.preventDefault();
+            const name = document.getElementById("itemName").value.trim();
+            const category = document.getElementById("itemCategory").value;
+            const price = document.getElementById("itemPrice").value.trim();
+            const condition = document.getElementById("itemCondition").value;
+            const description = document.getElementById("itemDescription").value.trim();
+            const seller = document.getElementById("sellerName").value.trim();
+            const file = imageInput?.files[0];
 
-                alert(
-                    "Please fill in all required fields."
-                );
+            if (!name || !category || !price || !condition || !description || !seller) {
+                alert("Please fill in all required fields.");
+                return;
             }
-        }
-    );
-}
 
+            const numericPrice = Number(price);
+            if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
+                alert("Price must be greater than 0.");
+                return;
+            }
 
-/* CATEGORY FROM URL */
+            if (!file) {
+                alert("Please upload a product photo.");
+                return;
+            }
 
-function loadCategoryFromURL() {
+            if (!file.type.startsWith("image/")) {
+                alert("Please select an image file.");
+                return;
+            }
 
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
+            if (file.size > 2 * 1024 * 1024) {
+                alert("Please choose an image smaller than 2MB.");
+                return;
+            }
 
-    const category =
-        params.get("category");
+            const reader = new FileReader();
+            reader.onload = function (loadEvent) {
+                products.unshift({
+                    id: Date.now(),
+                    name,
+                    price: numericPrice,
+                    category,
+                    condition,
+                    description,
+                    seller,
+                    image: loadEvent.target.result
+                });
 
-    const categoryFilter =
-        document.getElementById(
-            "categoryFilter"
-        );
+                saveProducts();
+                displayProducts(products);
+                displayFeaturedProducts();
+                form.reset();
+                previewContainer?.classList.add("d-none");
 
-    if (
-        category &&
-        categoryFilter
-    ) {
+                const modalElement = document.getElementById("postItemModal");
+                if (modalElement) {
+                    bootstrap.Modal.getInstance(modalElement)?.hide();
+                }
 
-        categoryFilter.value =
-            category;
+                alert("Your item has been successfully posted!");
 
-        filterProducts();
+                if (window.location.pathname.includes("index.php")) {
+                    window.location.href = "products.php";
+                }
+            };
+            reader.readAsDataURL(file);
+        });
     }
-}
 
+    function setupAuthForms() {
+        document.querySelectorAll("[data-otp-preview]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                alert("OTP email delivery is not configured yet. No verification code was sent.");
+            });
+        });
 
-/* PAGE INITIALIZATION */
+        document.querySelectorAll("[data-password-toggle]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const input = document.getElementById(button.dataset.passwordToggle);
+                if (!input) {
+                    return;
+                }
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
+                const isPassword = input.type === "password";
+                input.type = isPassword ? "text" : "password";
+                button.setAttribute(
+                    "aria-label",
+                    `${isPassword ? "Hide" : "Show"} ${input.id === "confirmPassword" ? "confirm password" : "password"}`
+                );
+                button.innerHTML = `<i class="bi ${isPassword ? "bi-eye-slash" : "bi-eye"}"></i>`;
+            });
+        });
 
-        if (
-            document.getElementById(
-                "productContainer"
-            )
-        ) {
+        const form = document.getElementById("registerForm");
+        const password = document.getElementById("registerPassword");
+        const confirmation = document.getElementById("confirmPassword");
 
-            displayProducts(
-                products
+        if (!form || !password || !confirmation) {
+            return;
+        }
+
+        function validateConfirmation() {
+            confirmation.setCustomValidity(
+                confirmation.value && confirmation.value !== password.value
+                    ? "Passwords do not match."
+                    : ""
             );
         }
 
-        if (
-            document.getElementById(
-                "featuredProducts"
-            )
-        ) {
-
-            displayFeaturedProducts();
-        }
-
-        const searchInput =
-            document.getElementById(
-                "searchInput"
-            );
-
-        if (searchInput) {
-
-            searchInput.addEventListener(
-                "input",
-                filterProducts
-            );
-        }
-
-        const categoryFilter =
-            document.getElementById(
-                "categoryFilter"
-            );
-
-        if (categoryFilter) {
-
-            categoryFilter.addEventListener(
-                "change",
-                filterProducts
-            );
-        }
-
-        const sortFilter =
-            document.getElementById(
-                "sortFilter"
-            );
-
-        if (sortFilter) {
-
-            sortFilter.addEventListener(
-                "change",
-                filterProducts
-            );
-        }
-
-        setupPostItemForm();
-
-        setupImagePreview();
-
-        setupContactForm();
-
-        setupContactSellerButton();
-
-        loadCategoryFromURL();
-
+        password.addEventListener("input", validateConfirmation);
+        confirmation.addEventListener("input", validateConfirmation);
+        form.addEventListener("submit", validateConfirmation);
     }
-);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setupProductFeatures();
+        setupItemListing();
+        setupAuthForms();
+    });
+})();

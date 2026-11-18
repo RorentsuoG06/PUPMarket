@@ -8,8 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 $fullName = trim($_POST["full_name"] ?? "");
 $studentNumber = trim($_POST["student_number"] ?? "");
-$email = trim($_POST["email"] ?? "");
-$username = trim($_POST["username"] ?? "");
+$email = strtolower(trim($_POST["email"] ?? ""));
 $password = $_POST["password"] ?? "";
 $confirmPassword = $_POST["confirm_password"] ?? "";
 
@@ -17,7 +16,6 @@ if (
     $fullName === "" ||
     $studentNumber === "" ||
     $email === "" ||
-    $username === "" ||
     $password === "" ||
     $confirmPassword === ""
 ) {
@@ -25,12 +23,17 @@ if (
     exit;
 }
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+if (
+    !filter_var($email, FILTER_VALIDATE_EMAIL) ||
+    !str_ends_with($email, "@iskolarngbayan.pup.edu.ph")
+) {
     header("Location: ../register.php?status=email");
     exit;
 }
 
-if (strlen($password) < 6) {
+$passwordLength = preg_match_all("/./us", $password);
+
+if ($passwordLength === false || $passwordLength < 6) {
     header("Location: ../register.php?status=password");
     exit;
 }
@@ -40,10 +43,10 @@ if ($password !== $confirmPassword) {
     exit;
 }
 
-/* Check if email, username, or student number already exists. */
+/* Check whether the institutional email or student number is already registered. */
 $checkQuery = "SELECT user_id
                FROM users
-               WHERE email = ? OR username = ? OR student_number = ?
+               WHERE email = ? OR student_number = ?
                LIMIT 1";
 
 $checkStmt = mysqli_prepare($conn, $checkQuery);
@@ -53,7 +56,7 @@ if (!$checkStmt) {
     exit;
 }
 
-mysqli_stmt_bind_param($checkStmt, "sss", $email, $username, $studentNumber);
+mysqli_stmt_bind_param($checkStmt, "ss", $email, $studentNumber);
 mysqli_stmt_execute($checkStmt);
 mysqli_stmt_store_result($checkStmt);
 
@@ -65,6 +68,9 @@ if (mysqli_stmt_num_rows($checkStmt) > 0) {
 }
 
 mysqli_stmt_close($checkStmt);
+
+/* Keep the existing unique username column without requiring a separate username. */
+$username = "pup_" . bin2hex(random_bytes(12));
 
 /* Password is hashed before it is stored in the database. */
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);

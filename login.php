@@ -20,10 +20,13 @@ if (isset($_GET["registered"])) {
     $message = "You have been signed out.";
     $messageType = "success";
 } elseif ($status === "empty") {
-    $message = "Please enter your username and password.";
+    $message = "Please enter your PUP webmail, student number, and password.";
+    $messageType = "danger";
+} elseif ($status === "email") {
+    $message = "Use your @iskolarngbayan.pup.edu.ph email address.";
     $messageType = "danger";
 } elseif ($status === "invalid") {
-    $message = "Invalid username/email or password.";
+    $message = "The email, student number, or password is incorrect.";
     $messageType = "danger";
 } elseif ($status === "failed") {
     $message = "Something went wrong while logging in.";
@@ -37,36 +40,31 @@ require "includes/header.php";
 require "includes/navbar.php";
 ?>
 
-<section class="page-header">
-
-    <div class="container text-center">
-
-        <h1 class="fw-bold">
-            Login
-        </h1>
-
-        <p>
-            Log in to your PUPMarket account.
-        </p>
-
-    </div>
-
-</section>
-
-
-<section class="py-5">
+<section class="py-5 auth-page">
 
     <div class="container">
 
         <div class="row justify-content-center">
 
-            <div class="col-lg-6">
+            <div class="col-lg-6 col-xl-5">
 
-                <div class="contact-form-card">
+                <div class="contact-form-card auth-card">
 
-                    <h3 class="fw-bold mb-4">
-                        Welcome Back
-                    </h3>
+                    <div class="auth-switch" aria-label="Account options">
+                        <span class="active" aria-current="page">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Log In
+                        </span>
+                        <a href="register.php">
+                            <i class="bi bi-person-plus-fill"></i>
+                            Create Account
+                        </a>
+                    </div>
+
+                    <div class="auth-heading">
+                        <h2 class="fw-bold">Welcome Back</h2>
+                        <p class="text-muted mb-0">Log in with your PUP student credentials.</p>
+                    </div>
 
                     <?php if ($message !== ""): ?>
 
@@ -82,37 +80,81 @@ require "includes/navbar.php";
 
                         <div class="mb-3">
 
-                            <label class="form-label">
-                                Username or Email
+                            <label class="form-label" for="loginEmail">
+                                PUP Webmail
                             </label>
 
-                            <input type="text"
-                                   class="form-control"
-                                   name="username"
-                                   required>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </span>
+                                <input type="email"
+                                       class="form-control"
+                                       id="loginEmail"
+                                       name="email"
+                                       placeholder="name@iskolarngbayan.pup.edu.ph"
+                                       pattern=".+@iskolarngbayan\.pup\.edu\.ph"
+                                       title="Use your @iskolarngbayan.pup.edu.ph email address."
+                                       autocomplete="email"
+                                       required>
+                            </div>
 
                         </div>
 
+                        <div class="mb-3">
+
+                            <label class="form-label" for="loginStudentNumber">
+                                Student Number
+                            </label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-vcard-fill"></i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="loginStudentNumber"
+                                       name="student_number"
+                                       placeholder="Enter your student number"
+                                       autocomplete="off"
+                                       required>
+                            </div>
+
+                        </div>
 
                         <div class="mb-4">
 
-                            <label class="form-label">
+                            <label class="form-label" for="loginPassword">
                                 Password
                             </label>
 
-                            <input type="password"
-                                   class="form-control"
-                                   name="password"
-                                   required>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock-fill"></i>
+                                </span>
+                                <input type="password"
+                                       class="form-control"
+                                       id="loginPassword"
+                                       name="password"
+                                       placeholder="Enter your password"
+                                       autocomplete="current-password"
+                                       required>
+                                <button class="btn btn-outline-secondary password-toggle"
+                                        type="button"
+                                        data-password-toggle="loginPassword"
+                                        aria-label="Show password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
 
                         </div>
 
 
                         <button type="submit"
-                                class="btn btn-pup w-100">
+                                class="btn btn-pup auth-submit w-100">
 
                             <i class="bi bi-box-arrow-in-right"></i>
-                            Login
+                            Log In
 
                         </button>
 
@@ -122,9 +164,7 @@ require "includes/navbar.php";
                     <p class="text-center mt-4 mb-0">
 
                         Don't have an account?
-                        <a href="register.php">
-                            Register here
-                        </a>
+                        <a href="register.php">Create an account</a>
 
                     </p>
 

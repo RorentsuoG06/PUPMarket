@@ -1,8 +1,8 @@
 PUPMARKET PHP + MYSQL SETUP
 ============================
 
-This version converts the current PUPMarket static pages into PHP pages
-while keeping the existing visual design and product JavaScript features.
+This version converts the PUPMarket pages into PHP pages and includes a
+responsive visual design and modular product JavaScript features.
 
 REQUIREMENTS
 ------------
@@ -128,21 +128,18 @@ cookie.jpg
 no-image.jpg
 
 
-STEP 6 - KEEP YOUR CURRENT CSS
-------------------------------
-IMPORTANT:
-
-Your existing css/style.css controls the current PUPMarket design.
-
-Keep your current style.css file in:
+STEP 6 - KEEP THE PROJECT CSS AND JAVASCRIPT
+--------------------------------------------
+Keep the project's css/style.css file in:
 
 PUPMarket_PHP/css/style.css
-
-The PHP conversion does not require a redesign.
 
 The PHP files continue to use:
 
 css/style.css
+
+The browser behavior is consolidated in js/script.js. It initializes only the
+features present on the current page.
 
 
 STEP 7 - OPEN THE WEBSITE
@@ -173,6 +170,11 @@ The account should appear there.
 
 The password is stored as a password hash.
 
+Registration requires an @iskolarngbayan.pup.edu.ph email and a password of
+at least 6 characters. The OTP block is a UI preview only; it does not send
+email or verify the entered code, so it must not be treated as student
+verification.
+
 
 B. LOGIN
 
@@ -180,7 +182,7 @@ Open:
 
 http://localhost/PUPMarket_PHP/login.php
 
-Use the registered username/email and password.
+Use your registered @iskolarngbayan.pup.edu.ph email, student number, and password.
 
 After successful login, you will be redirected to:
 
