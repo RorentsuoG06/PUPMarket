@@ -19,25 +19,34 @@ if (isset($_GET["registered"])) {
 } elseif (isset($_GET["logout"])) {
     $message = "You have been signed out.";
     $messageType = "success";
+} elseif ($status === "password_reset") {
+    $message = "Your password has been reset. You can now log in.";
+    $messageType = "success";
 } elseif ($status === "empty") {
-    $message = "Please enter your PUP webmail, student number, and password.";
+    $message = "Please enter your PUP webmail and password.";
     $messageType = "danger";
 } elseif ($status === "email") {
     $message = "Use your @iskolarngbayan.pup.edu.ph email address.";
     $messageType = "danger";
 } elseif ($status === "invalid") {
-    $message = "The email, student number, or password is incorrect.";
+    $message = "The email or password is incorrect.";
+    $messageType = "danger";
+} elseif ($status === "oauth_unconfigured") {
+    $message = "Microsoft sign-in is not configured yet. Set MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET in config/microsoft_oauth.php.";
+    $messageType = "warning";
+} elseif ($status === "oauth_failed") {
+    $message = "Microsoft sign-in could not be completed. Please try again.";
     $messageType = "danger";
 } elseif ($status === "failed") {
     $message = "Something went wrong while logging in.";
     $messageType = "danger";
 }
 
-$pageTitle = "Login | PUPMarket";
+$pageTitle = "Login | IskoFinds";
 $currentPage = "";
 
-require "includes/header.php";
-require "includes/navbar.php";
+require __DIR__ . "/../src/includes/header.php";
+require __DIR__ . "/../src/includes/navbar.php";
 ?>
 
 <section class="py-5 auth-page">
@@ -101,32 +110,16 @@ require "includes/navbar.php";
 
                         </div>
 
-                        <div class="mb-3">
-
-                            <label class="form-label" for="loginStudentNumber">
-                                Student Number
-                            </label>
-
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="bi bi-person-vcard-fill"></i>
-                                </span>
-                                <input type="text"
-                                       class="form-control"
-                                       id="loginStudentNumber"
-                                       name="student_number"
-                                       placeholder="Enter your student number"
-                                       autocomplete="off"
-                                       required>
-                            </div>
-
-                        </div>
-
                         <div class="mb-4">
 
-                            <label class="form-label" for="loginPassword">
-                                Password
-                            </label>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0" for="loginPassword">
+                                    Password
+                                </label>
+                                <a href="forgot_password.php" class="small text-decoration-none">
+                                    Forgot password?
+                                </a>
+                            </div>
 
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -160,6 +153,20 @@ require "includes/navbar.php";
 
                     </form>
 
+                    <div class="auth-divider my-3">
+                        <span>or</span>
+                    </div>
+
+                    <a href="actions/microsoft_login.php" class="btn btn-microsoft w-100">
+                        <svg width="18" height="18" viewBox="0 0 21 21" aria-hidden="true">
+                            <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+                            <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+                            <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+                            <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+                        </svg>
+                        Continue with Microsoft
+                    </a>
+
 
                     <p class="text-center mt-4 mb-0">
 
@@ -178,4 +185,4 @@ require "includes/navbar.php";
 
 </section>
 
-<?php require "includes/footer.php"; ?>
+<?php require __DIR__ . "/../src/includes/footer.php"; ?>

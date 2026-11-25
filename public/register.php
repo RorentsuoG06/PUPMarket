@@ -11,9 +11,9 @@ if (isset($_SESSION["user_id"])) {
 $message = "";
 $messageType = "";
 
-$fullName = "";
-$studentNumber = "";
-$email = "";
+$fullName = $_SESSION["register_old"]["full_name"] ?? "";
+$email = $_SESSION["register_old"]["email"] ?? "";
+unset($_SESSION["register_old"]);
 
 $status = $_GET["status"] ?? "";
 
@@ -30,18 +30,31 @@ if ($status === "empty") {
     $message = "Passwords do not match.";
     $messageType = "danger";
 } elseif ($status === "exists") {
-    $message = "That email or student number is already registered.";
+    $message = "That email is already registered.";
+    $messageType = "danger";
+} elseif ($status === "otp_required") {
+    $message = "Please enter the 6-digit verification code sent to your email.";
+    $messageType = "danger";
+} elseif ($status === "otp_expired") {
+    $message = "Your verification code has expired or was not found. Please request a new one.";
+    $messageType = "danger";
+} elseif ($status === "otp_invalid") {
+    $message = "The verification code you entered is incorrect.";
+    $messageType = "danger";
+} elseif ($status === "otp_attempts") {
+    $message = "Too many incorrect attempts. Please request a new verification code.";
     $messageType = "danger";
 } elseif ($status === "failed") {
     $message = "Something went wrong while creating the account.";
     $messageType = "danger";
 }
 
-$pageTitle = "Register | PUPMarket";
+$pageTitle = "Register | IskoFinds";
 $currentPage = "";
+$showOtpBox = in_array($status, ["otp_required", "otp_expired", "otp_invalid", "otp_attempts"], true);
 
-require "includes/header.php";
-require "includes/navbar.php";
+require __DIR__ . "/../src/includes/header.php";
+require __DIR__ . "/../src/includes/navbar.php";
 ?>
 
 <section class="py-5 auth-page">
@@ -66,7 +79,7 @@ require "includes/navbar.php";
                     </div>
 
                     <div class="auth-heading">
-                        <h2 class="fw-bold">Join PUPMarket</h2>
+                        <h2 class="fw-bold">Join IskoFinds</h2>
                         <p class="text-muted mb-0">Create your student account to get started.</p>
                     </div>
 
@@ -96,28 +109,6 @@ require "includes/navbar.php";
                                    placeholder="Enter your full name"
                                    value="<?= htmlspecialchars($fullName) ?>"
                                    required>
-
-                        </div>
-
-                        <div class="mb-3">
-
-                            <label class="form-label" for="studentNumber">
-                                Student Number
-                            </label>
-
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="bi bi-person-vcard-fill"></i>
-                                </span>
-                                <input type="text"
-                                       class="form-control"
-                                       id="studentNumber"
-                                       name="student_number"
-                                       placeholder="Enter your student number"
-                                       value="<?= htmlspecialchars($studentNumber) ?>"
-                                       autocomplete="off"
-                                       required>
-                            </div>
 
                         </div>
 
@@ -204,7 +195,7 @@ require "includes/navbar.php";
 
                         </div>
 
-                        <div class="otp-preview mb-4">
+                        <div class="otp-preview mb-4<?= $showOtpBox ? '' : ' d-none' ?>" id="otpVerificationBox">
                             <div class="d-flex align-items-start gap-3">
                                 <span class="otp-preview-icon">
                                     <i class="bi bi-patch-check-fill"></i>
@@ -212,37 +203,55 @@ require "includes/navbar.php";
                                 <div>
                                     <h3>Email verification</h3>
                                     <p class="mb-3">
-                                        UI preview only: no code is sent, and entered codes are not verified.
+                                        Enter the 6-digit verification code sent to your PUP Webmail.
                                     </p>
                                     <div class="input-group">
                                         <input type="text"
                                                class="form-control"
+                                               id="otpCode"
+                                               name="otp"
                                                placeholder="6-digit OTP"
                                                inputmode="numeric"
                                                autocomplete="one-time-code"
                                                pattern="[0-9]{6}"
                                                maxlength="6"
-                                               required
+                                               <?= $showOtpBox ? "required" : "" ?>
                                                aria-label="One-time password">
                                         <button class="btn btn-outline-pup"
                                                 type="button"
-                                                data-otp-preview>
-                                            Send OTP
+                                                id="sendOtpBtn">
+                                            <?= $showOtpBox ? "Resend OTP" : "Send OTP" ?>
                                         </button>
                                     </div>
+                                    <div id="otpStatus" class="form-text mt-2" aria-live="polite"></div>
                                 </div>
                             </div>
                         </div>
 
                         <button type="submit"
-                                class="btn btn-pup auth-submit w-100">
+                                class="btn btn-pup auth-submit w-100"
+                                id="registerSubmitBtn">
 
                             <i class="bi bi-person-check-fill"></i>
-                            Register Account
+                            <?= $showOtpBox ? "Verify & Register Account" : "Register Account" ?>
 
                         </button>
 
                     </form>
+
+                    <div class="auth-divider my-3">
+                        <span>or</span>
+                    </div>
+
+                    <a href="actions/microsoft_login.php" class="btn btn-microsoft w-100">
+                        <svg width="18" height="18" viewBox="0 0 21 21" aria-hidden="true">
+                            <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+                            <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+                            <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+                            <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+                        </svg>
+                        Continue with Microsoft
+                    </a>
 
                     <p class="text-center mt-4 mb-0">
                         Already have an account?
@@ -259,4 +268,4 @@ require "includes/navbar.php";
 
 </section>
 
-<?php require "includes/footer.php"; ?>
+<?php require __DIR__ . "/../src/includes/footer.php"; ?>

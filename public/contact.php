@@ -21,8 +21,8 @@ if ($status === "success") {
     $messageType = "danger";
 }
 
-require "includes/header.php";
-require "includes/navbar.php";
+require __DIR__ . "/../src/includes/header.php";
+require __DIR__ . "/../src/includes/navbar.php";
 ?>
 
 <section class="page-header">
@@ -235,4 +235,4 @@ require "includes/navbar.php";
 
 </section>
 
-<?php require "includes/footer.php"; ?>
+<?php require __DIR__ . "/../src/includes/footer.php"; ?>

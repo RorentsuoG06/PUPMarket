@@ -1,6 +1,6 @@
 <?php
 
-require "../config/database.php";
+require __DIR__ . "/../../config/database.php";
 
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -15,11 +15,10 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 
 $email = strtolower(trim($_POST["email"] ?? ""));
-$studentNumber = trim($_POST["student_number"] ?? "");
 $password = $_POST["password"] ?? "";
 
 
-if ($email === "" || $studentNumber === "" || $password === "") {
+if ($email === "" || $password === "") {
     header("Location: ../login.php?status=empty");
     exit;
 }
@@ -34,7 +33,7 @@ if (
 
 $query = "SELECT user_id, full_name, username, password
           FROM users
-          WHERE email = ? AND student_number = ?
+          WHERE email = ?
           LIMIT 1";
 
 
@@ -48,9 +47,8 @@ if (!$stmt) {
 
 mysqli_stmt_bind_param(
     $stmt,
-    "ss",
-    $email,
-    $studentNumber
+    "s",
+    $email
 );
 
 mysqli_stmt_execute($stmt);

@@ -1,5 +1,5 @@
 <?php
-require "../actions/database.php";
+require __DIR__ . "/../../config/database.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../contact.php");

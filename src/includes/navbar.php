@@ -56,6 +56,14 @@ if (!isset($currentPage)) {
 
                 <?php if (isset($_SESSION['user_id'])): ?>
 
+                    <li class="nav-item">
+                        <a class="nav-link <?= $currentPage === 'profile' ? 'active' : '' ?>"
+                           href="profile.php">
+                            <i class="bi bi-person-circle"></i>
+                            Profile
+                        </a>
+                    </li>
+
                     <li class="nav-item ms-lg-2">
                         <a class="btn btn-warning fw-bold"
                            href="logout.php">

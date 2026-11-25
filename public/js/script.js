@@ -403,13 +403,115 @@
         });
     }
 
-    function setupAuthForms() {
-        document.querySelectorAll("[data-otp-preview]").forEach(function (button) {
-            button.addEventListener("click", function () {
-                alert("OTP email delivery is not configured yet. No verification code was sent.");
-            });
-        });
+    function createOtpRequester({ button, emailInput, statusEl, otpInput, endpoint, defaultLabel, resendLabel }) {
+        let cooldownTimer = null;
 
+        function setStatus(text, isError) {
+            if (!statusEl) {
+                return;
+            }
+            statusEl.textContent = text;
+            statusEl.className = `form-text mt-2 ${isError ? "text-danger" : "text-success"}`;
+        }
+
+        function startCooldown(seconds) {
+            if (!button) {
+                return;
+            }
+            if (cooldownTimer) {
+                clearInterval(cooldownTimer);
+            }
+            let remaining = seconds;
+            button.disabled = true;
+            button.textContent = `Resend (${remaining}s)`;
+
+            cooldownTimer = setInterval(function () {
+                remaining -= 1;
+                if (remaining <= 0) {
+                    clearInterval(cooldownTimer);
+                    cooldownTimer = null;
+                    button.disabled = false;
+                    button.textContent = resendLabel;
+                } else {
+                    button.textContent = `Resend (${remaining}s)`;
+                }
+            }, 1000);
+        }
+
+        async function requestOtp() {
+            if (!emailInput) {
+                return false;
+            }
+
+            const email = emailInput.value.trim().toLowerCase();
+            if (!email || !email.endsWith("@iskolarngbayan.pup.edu.ph")) {
+                setStatus("Enter a valid @iskolarngbayan.pup.edu.ph email first.", true);
+                emailInput.focus();
+                return false;
+            }
+
+            if (button) {
+                button.disabled = true;
+                button.textContent = "Sending...";
+            }
+            setStatus("Sending verification code...", false);
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    setStatus(data.message || "Failed to send verification code.", true);
+                    if (data.retry_after && Number(data.retry_after) > 0) {
+                        startCooldown(Number(data.retry_after));
+                    } else if (button) {
+                        button.disabled = false;
+                        button.textContent = defaultLabel;
+                    }
+                    return false;
+                }
+
+                setStatus(data.message || "Verification code sent to your PUP Webmail.", false);
+                startCooldown(60);
+                otpInput?.focus();
+                return true;
+            } catch (error) {
+                setStatus("Network error while sending verification code. Please try again.", true);
+                if (button) {
+                    button.disabled = false;
+                    button.textContent = defaultLabel;
+                }
+                return false;
+            }
+        }
+
+        button?.addEventListener("click", requestOtp);
+        return { requestOtp, setStatus };
+    }
+
+    function bindPasswordMatch(passwordInput, confirmInput) {
+        if (!passwordInput || !confirmInput) {
+            return function () {};
+        }
+
+        function validate() {
+            confirmInput.setCustomValidity(
+                confirmInput.value && confirmInput.value !== passwordInput.value
+                    ? "Passwords do not match."
+                    : ""
+            );
+        }
+
+        passwordInput.addEventListener("input", validate);
+        confirmInput.addEventListener("input", validate);
+        return validate;
+    }
+
+    function setupAuthForms() {
         document.querySelectorAll("[data-password-toggle]").forEach(function (button) {
             button.addEventListener("click", function () {
                 const input = document.getElementById(button.dataset.passwordToggle);
@@ -421,31 +523,96 @@
                 input.type = isPassword ? "text" : "password";
                 button.setAttribute(
                     "aria-label",
-                    `${isPassword ? "Hide" : "Show"} ${input.id === "confirmPassword" ? "confirm password" : "password"}`
+                    `${isPassword ? "Hide" : "Show"} ${input.id.toLowerCase().includes("confirm") ? "confirm password" : "password"}`
                 );
                 button.innerHTML = `<i class="bi ${isPassword ? "bi-eye-slash" : "bi-eye"}"></i>`;
             });
         });
 
-        const form = document.getElementById("registerForm");
-        const password = document.getElementById("registerPassword");
-        const confirmation = document.getElementById("confirmPassword");
-
-        if (!form || !password || !confirmation) {
-            return;
-        }
-
-        function validateConfirmation() {
-            confirmation.setCustomValidity(
-                confirmation.value && confirmation.value !== password.value
-                    ? "Passwords do not match."
-                    : ""
+        const registerForm = document.getElementById("registerForm");
+        if (registerForm) {
+            const otpBox = document.getElementById("otpVerificationBox");
+            const otpInput = document.getElementById("otpCode");
+            const registerSubmitBtn = document.getElementById("registerSubmitBtn");
+            const validateRegMatch = bindPasswordMatch(
+                document.getElementById("registerPassword"),
+                document.getElementById("confirmPassword")
             );
+            const registerOtp = createOtpRequester({
+                button: document.getElementById("sendOtpBtn"),
+                emailInput: document.getElementById("registerEmail"),
+                statusEl: document.getElementById("otpStatus"),
+                otpInput,
+                endpoint: "api/send_otp.php",
+                defaultLabel: "Send OTP",
+                resendLabel: "Resend OTP"
+            });
+
+            registerForm.addEventListener("submit", function (event) {
+                validateRegMatch();
+
+                if (otpBox && otpBox.classList.contains("d-none")) {
+                    event.preventDefault();
+                    if (!registerForm.reportValidity()) {
+                        return;
+                    }
+
+                    otpBox.classList.remove("d-none");
+                    if (otpInput) {
+                        otpInput.required = true;
+                    }
+                    if (registerSubmitBtn) {
+                        registerSubmitBtn.innerHTML = '<i class="bi bi-person-check-fill"></i> Verify &amp; Register Account';
+                    }
+                    registerOtp.requestOtp();
+                }
+            });
         }
 
-        password.addEventListener("input", validateConfirmation);
-        confirmation.addEventListener("input", validateConfirmation);
-        form.addEventListener("submit", validateConfirmation);
+        const forgotForm = document.getElementById("forgotPasswordForm");
+        if (forgotForm) {
+            const resetFieldsBox = document.getElementById("resetFieldsBox");
+            const resetOtpInput = document.getElementById("resetOtpCode");
+            const resetNewPassword = document.getElementById("resetNewPassword");
+            const resetConfirmPassword = document.getElementById("resetConfirmPassword");
+            const resetSubmitBtn = document.getElementById("resetSubmitBtn");
+            const validateResetMatch = bindPasswordMatch(resetNewPassword, resetConfirmPassword);
+            const resetOtp = createOtpRequester({
+                button: document.getElementById("sendResetOtpBtn"),
+                emailInput: document.getElementById("resetEmail"),
+                statusEl: document.getElementById("resetOtpStatus"),
+                otpInput: resetOtpInput,
+                endpoint: "api/send_reset_otp.php",
+                defaultLabel: "Send Code",
+                resendLabel: "Resend Code"
+            });
+
+            forgotForm.addEventListener("submit", async function (event) {
+                validateResetMatch();
+
+                if (resetFieldsBox && resetFieldsBox.classList.contains("d-none")) {
+                    event.preventDefault();
+                    if (!forgotForm.reportValidity()) {
+                        return;
+                    }
+
+                    resetFieldsBox.classList.remove("d-none");
+                    if (resetOtpInput) {
+                        resetOtpInput.required = true;
+                    }
+                    if (resetNewPassword) {
+                        resetNewPassword.required = true;
+                    }
+                    if (resetConfirmPassword) {
+                        resetConfirmPassword.required = true;
+                    }
+                    if (resetSubmitBtn) {
+                        resetSubmitBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Reset Password';
+                    }
+                    await resetOtp.requestOtp();
+                }
+            });
+        }
     }
 
     document.addEventListener("DOMContentLoaded", function () {

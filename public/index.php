@@ -1,8 +1,8 @@
 <?php
 $pageTitle = "PUPMarket | PUP Biñan Student Marketplace";
 $currentPage = "home";
-require "includes/header.php";
-require "includes/navbar.php";
+require __DIR__ . "/../src/includes/header.php";
+require __DIR__ . "/../src/includes/navbar.php";
 ?>
 
 <!-- ================= HERO ================= -->
@@ -574,4 +574,4 @@ require "includes/navbar.php";
 
 </div>
 
-<?php require "includes/footer.php"; ?>
+<?php require __DIR__ . "/../src/includes/footer.php"; ?>
