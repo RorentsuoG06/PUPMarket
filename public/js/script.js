@@ -615,9 +615,156 @@
         }
     }
 
+    function setupAuthTabAnimation() {
+        const authCard = document.querySelector(".auth-card");
+        const authSwitch = authCard?.querySelector(".auth-switch");
+        if (!authCard || !authSwitch) {
+            return;
+        }
+
+        const activeTab = authSwitch.querySelector(".active");
+        const inactiveLink = authSwitch.querySelector("a");
+        if (!activeTab || !inactiveLink) {
+            return;
+        }
+
+        const pill = document.createElement("div");
+        pill.className = "auth-switch-pill";
+        pill.setAttribute("aria-hidden", "true");
+        authSwitch.prepend(pill);
+        authSwitch.classList.add("has-pill");
+
+        function placePill(targetEl, animate) {
+            if (!animate) {
+                pill.style.transition = "none";
+            }
+            pill.style.width = `${targetEl.offsetWidth}px`;
+            pill.style.transform = `translateX(${targetEl.offsetLeft}px)`;
+            if (!animate) {
+                pill.getBoundingClientRect();
+                pill.style.transition = "";
+            }
+        }
+
+        const contentEls = Array.from(authCard.children).filter(
+            (el) => el !== authSwitch
+        );
+
+        const pendingDir = sessionStorage.getItem("iskofindsAuthTabDir");
+        if (pendingDir === "to-register" || pendingDir === "to-login") {
+            sessionStorage.removeItem("iskofindsAuthTabDir");
+            placePill(inactiveLink, false);
+            requestAnimationFrame(function () {
+                placePill(activeTab, true);
+            });
+            const enterClass = pendingDir === "to-register" ? "auth-anim-enter-right" : "auth-anim-enter-left";
+            contentEls.forEach((el) => el.classList.add(enterClass));
+        } else {
+            placePill(activeTab, false);
+        }
+
+        window.addEventListener("resize", function () {
+            placePill(activeTab, false);
+        });
+
+        const switchLinks = authCard.querySelectorAll('.auth-switch a, p a[href="register.php"], p a[href="login.php"]');
+        switchLinks.forEach(function (link) {
+            link.addEventListener("click", function (event) {
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+                    return;
+                }
+                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                    return;
+                }
+
+                event.preventDefault();
+                const href = link.getAttribute("href") || "";
+                const goingToRegister = href.includes("register.php");
+
+                sessionStorage.setItem(
+                    "iskofindsAuthTabDir",
+                    goingToRegister ? "to-register" : "to-login"
+                );
+
+                activeTab.classList.remove("active");
+                inactiveLink.classList.add("active");
+                placePill(inactiveLink, true);
+
+                const exitClass = goingToRegister ? "auth-anim-exit-left" : "auth-anim-exit-right";
+                contentEls.forEach((el) => el.classList.add(exitClass));
+
+                setTimeout(function () {
+                    window.location.href = link.href;
+                }, 180);
+            });
+        });
+    }
+
+    function setupLoginHeroAnimation() {
+        const hero = document.querySelector('.hero-section[data-login-success="true"]');
+        if (!hero) {
+            return;
+        }
+
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const welcome = document.createElement("section");
+        welcome.className = `login-welcome${reduceMotion ? " is-reduced-motion" : ""}`;
+        welcome.setAttribute("role", "status");
+        welcome.setAttribute("aria-live", "polite");
+        welcome.innerHTML = `
+            <div class="login-welcome__content">
+                <p class="login-welcome__eyebrow">PUP BIÑAN STUDENT MARKETPLACE</p>
+                <div class="login-welcome__visual" aria-hidden="true">
+                    <img src="images/login-welcome.png" alt="">
+                    <span class="login-welcome__item login-welcome__item--book"><i class="bi bi-book-half"></i></span>
+                    <span class="login-welcome__item login-welcome__item--bag"><i class="bi bi-bag-heart-fill"></i></span>
+                    <span class="login-welcome__item login-welcome__item--calculator"><i class="bi bi-calculator-fill"></i></span>
+                    <span class="login-welcome__item login-welcome__item--journal"><i class="bi bi-journal-bookmark-fill"></i></span>
+                </div>
+                <h1>Welcome back, <span>Iskolar!</span></h1>
+                <p class="login-welcome__message">Your campus marketplace is ready.</p>
+            </div>
+        `;
+
+        document.body.classList.add("login-welcome-active");
+        document.body.appendChild(welcome);
+        window.requestAnimationFrame(function () {
+            welcome.classList.add("is-visible");
+        });
+
+        window.setTimeout(function () {
+            welcome.classList.add("is-leaving");
+        }, reduceMotion ? 1100 : 2700);
+        window.setTimeout(function () {
+            welcome.remove();
+            document.body.classList.remove("login-welcome-active");
+        }, reduceMotion ? 1400 : 3250);
+    }
+
+    function setupRememberMeOption() {
+        const checkbox = document.getElementById("rememberMe");
+        const microsoftLink = document.querySelector("[data-remember-me-link]");
+        if (!checkbox || !microsoftLink) {
+            return;
+        }
+
+        const loginUrl = new URL(microsoftLink.href, window.location.href);
+        microsoftLink.addEventListener("click", function () {
+            if (checkbox.checked) {
+                loginUrl.searchParams.set("remember", "1");
+            } else {
+                loginUrl.searchParams.delete("remember");
+            }
+            microsoftLink.href = loginUrl.href;
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         setupProductFeatures();
         setupItemListing();
         setupAuthForms();
+        setupAuthTabAnimation();
+        setupLoginHeroAnimation();
+        setupRememberMeOption();
     });
 })();

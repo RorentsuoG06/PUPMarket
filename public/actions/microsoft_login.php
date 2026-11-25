@@ -12,6 +12,7 @@ if (!isMicrosoftOAuthConfigured()) {
 
 $state = bin2hex(random_bytes(16));
 $_SESSION["microsoft_oauth_state"] = $state;
+$_SESSION["remember_login"] = ($_GET["remember"] ?? "") === "1";
 
 $params = http_build_query([
     "client_id" => MICROSOFT_CLIENT_ID,

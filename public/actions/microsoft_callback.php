@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../config/database.php";
 require_once __DIR__ . "/../../config/microsoft_oauth.php";
+require_once __DIR__ . "/../../src/Middleware/auth.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -145,12 +146,28 @@ if (!mysqli_stmt_fetch($selectStmt)) {
     mysqli_stmt_close($selectStmt);
 }
 
-mysqli_close($conn);
+$rememberMe = !empty($_SESSION["remember_login"]);
+unset($_SESSION["remember_login"]);
+
+if ($rememberMe) {
+    if (!issueRememberedLogin($conn, (int) $userId)) {
+        mysqli_close($conn);
+        header("Location: ../login.php?status=remember_failed");
+        exit;
+    }
+} elseif (isset($_COOKIE["pupmarket_remember"]) && !forgetRememberedLogin($conn)) {
+    mysqli_close($conn);
+    header("Location: ../login.php?status=remember_failed");
+    exit;
+}
 
 session_regenerate_id(true);
 $_SESSION["user_id"] = $userId;
 $_SESSION["full_name"] = $dbFullName;
 $_SESSION["username"] = $dbUsername;
+$_SESSION["login_success"] = true;
+
+mysqli_close($conn);
 
 header("Location: ../index.php");
 exit;

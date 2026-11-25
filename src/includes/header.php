@@ -1,7 +1,6 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . "/../Middleware/auth.php";
+restoreRememberedSession();
 
 if (!isset($pageTitle)) {
     $pageTitle = "PUPMarket";
@@ -22,6 +21,6 @@ if (!isset($pageTitle)) {
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet"
-          href="css/style.css">
+          href="css/style.css?v=3">
 </head>
 <body>

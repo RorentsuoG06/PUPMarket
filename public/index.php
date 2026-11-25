@@ -1,4 +1,11 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$showLoginAnimation = !empty($_SESSION["login_success"]);
+unset($_SESSION["login_success"]);
+
 $pageTitle = "PUPMarket | PUP Biñan Student Marketplace";
 $currentPage = "home";
 require __DIR__ . "/../src/includes/header.php";
@@ -7,7 +14,8 @@ require __DIR__ . "/../src/includes/navbar.php";
 
 <!-- ================= HERO ================= -->
 
-<section class="hero-section">
+<section class="hero-section"
+         data-login-success="<?= $showLoginAnimation ? 'true' : 'false' ?>">
     <div class="container">
 
         <div class="row align-items-center">

@@ -1,7 +1,7 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . "/../src/Middleware/auth.php";
+ensureSessionStarted();
+restoreRememberedSession();
 
 if (isset($_SESSION["user_id"])) {
     header("Location: index.php");
@@ -39,6 +39,9 @@ if (isset($_GET["registered"])) {
     $messageType = "danger";
 } elseif ($status === "failed") {
     $message = "Something went wrong while logging in.";
+    $messageType = "danger";
+} elseif ($status === "remember_failed") {
+    $message = "We couldn't enable Remember Me. Please try again or sign in without it.";
     $messageType = "danger";
 }
 
@@ -142,6 +145,17 @@ require __DIR__ . "/../src/includes/navbar.php";
 
                         </div>
 
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="rememberMe"
+                                   name="remember_me"
+                                   value="1">
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                                <span class="text-muted small">(stay signed in for 30 days)</span>
+                            </label>
+                        </div>
 
                         <button type="submit"
                                 class="btn btn-pup auth-submit w-100">
@@ -157,7 +171,9 @@ require __DIR__ . "/../src/includes/navbar.php";
                         <span>or</span>
                     </div>
 
-                    <a href="actions/microsoft_login.php" class="btn btn-microsoft w-100">
+                    <a href="actions/microsoft_login.php"
+                       class="btn btn-microsoft w-100"
+                       data-remember-me-link>
                         <svg width="18" height="18" viewBox="0 0 21 21" aria-hidden="true">
                             <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
                             <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>

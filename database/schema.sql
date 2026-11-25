@@ -15,6 +15,21 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Development-only accounts; remove these before deploying to production.
+INSERT IGNORE INTO users (full_name, email, username, password) VALUES
+    (
+        'PUPMarket Test Student',
+        'teststudent@iskolarngbayan.pup.edu.ph',
+        'pupmarket_test_student',
+        '$2y$10$mEqtG0bwX.FafuoV4YeVK.Le3Pvy932bPnOzmAhYqtMgxhAYOREUq'
+    ),
+    (
+        'PUPMarket Test Seller',
+        'testseller@iskolarngbayan.pup.edu.ph',
+        'pupmarket_test_seller',
+        '$2y$10$kQeIHJmA73qS00.nIxAVa.hFNcc4uMQJKqdTnZ1SyU4uhwZFHlkqy'
+    );
+
 CREATE TABLE IF NOT EXISTS email_otps (
     otp_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL,
@@ -34,6 +49,18 @@ CREATE TABLE IF NOT EXISTS password_resets (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_reset_email_created (email, created_at)
 );
+
+CREATE TABLE IF NOT EXISTS remember_tokens (
+    selector CHAR(32) NOT NULL PRIMARY KEY,
+    token_hash CHAR(64) NOT NULL,
+    user_id INT NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_remember_tokens_user (user_id),
+    INDEX idx_remember_tokens_expiry (expires_at),
+    CONSTRAINT fk_remember_tokens_user
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS inquiries (
     inquiry_id INT AUTO_INCREMENT PRIMARY KEY,

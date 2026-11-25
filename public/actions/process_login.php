@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__ . "/../../config/database.php";
+require_once __DIR__ . "/../../src/Middleware/auth.php";
 
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -72,14 +73,29 @@ if (
     password_verify($password, $passwordHash)
 ) {
 
+    mysqli_stmt_close($stmt);
+
+    $rememberMe = ($_POST["remember_me"] ?? "") === "1";
+    if ($rememberMe) {
+        if (!issueRememberedLogin($conn, (int) $userId)) {
+            mysqli_close($conn);
+            header("Location: ../login.php?status=remember_failed");
+            exit;
+        }
+    } elseif (isset($_COOKIE["pupmarket_remember"]) && !forgetRememberedLogin($conn)) {
+        mysqli_close($conn);
+        header("Location: ../login.php?status=remember_failed");
+        exit;
+    }
+
     session_regenerate_id(true);
 
     $_SESSION["user_id"] = $userId;
     $_SESSION["full_name"] = $fullName;
     $_SESSION["username"] = $dbUsername;
+    $_SESSION["login_success"] = true;
 
 
-    mysqli_stmt_close($stmt);
     mysqli_close($conn);
 
 
