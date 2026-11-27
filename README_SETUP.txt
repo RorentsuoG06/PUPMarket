@@ -89,6 +89,56 @@ users
 inquiries
 
 
+STEP 3A - ENABLE ACCOUNT-LINKED LISTINGS AND NEXCONN CHAT
+---------------------------------------------------------
+After creating the database, run:
+
+database/migrations/2026_11_27_nexconn_marketplace_chat.sql
+
+Run this migration once after creating the database. It adds Nexconn
+identities to users and creates the marketplace_listings table used for
+account-owned listings and seller chat links.
+
+Then run:
+
+database/migrations/2026_11_27_marketplace_reports.sql
+
+This adds listing/seller reports, the moderation queue, and the admin flag.
+Promote a trusted account in phpMyAdmin's SQL tab:
+
+UPDATE users SET is_admin = 1 WHERE username = 'your_admin_username';
+
+Only grant this to trusted moderators. The Reports page is available in the
+navbar only to accounts with this flag.
+
+Then run:
+
+database/migrations/2026_11_27_seed_sample_listings.sql
+
+This seeds the sample products under the development PUPMarket Test Seller
+account. It is safe to run again without duplicating those samples.
+
+Create a Nexconn app in the Nexconn Console, then add its App Key, App Secret,
+and data-center region to the project-root .env file:
+
+NEXCONN_APP_KEY=your_app_key
+NEXCONN_APP_SECRET=your_app_secret
+NEXCONN_REGION=SG
+
+Use the region matching the app's Nexconn data center (SG, NA, or SA). The App
+Secret is used only by PHP on the server and must never be put in JavaScript.
+If you change the data center, use the matching client region supported by the
+Nexconn SDK.
+
+Install the JavaScript packages and build the browser chat bundle from the
+project root:
+
+npm install
+npm run build:chat
+
+Make sure Apache can write product images under public/uploads/products.
+
+
 STEP 4 - CHECK DATABASE CONNECTION
 ----------------------------------
 Open:
@@ -221,20 +271,20 @@ db_pupmarket -> inquiries
 The submitted inquiry should appear in the table.
 
 
-IMPORTANT NOTE ABOUT PRODUCTS
------------------------------
-The current Post an Item feature remains frontend/localStorage based,
-because the professor's three listed requirements specifically require
-database POST/query functionality for:
+IMPORTANT NOTE ABOUT PRODUCTS AND CHAT
+--------------------------------------
+The sample products are stored in MySQL under the development PUPMarket Test
+Seller account. Listings posted by signed-in users are also saved in MySQL
+with their seller account, and the Contact Seller action opens a Nexconn
+direct chat. Product listings are loaded from the database, not browser
+localStorage.
 
-1. Contact Us
-2. Register
-3. Login
-
-Products can be converted to MySQL in a later phase if required.
-
-The existing product search, filter, sort, modal, local images, and
-frontend Post an Item behavior are preserved.
+The product catalog uses server-side search, category filtering, sorting, and
+pagination. Signed-in users can manage their own listings from the My Listings
+page, including editing details or replacing a photo and deleting a listing.
+These actions are ownership-checked and use the site's CSRF protection.
+Signed-in users can report a listing or its seller. Moderators can review,
+dismiss, or mark reports as actioned from the Moderation page.
 
 
 WHY PHP INCLUDES ARE USED
