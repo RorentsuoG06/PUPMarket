@@ -375,5 +375,4 @@
 
 <?php require VIEWS_PATH . "/partials/report_modal.php"; ?>
 
-<?php require __DIR__ . "/../src/includes/post_item_modal.php"; ?>
 <?php require VIEWS_PATH . "/partials/post_item_modal.php"; ?>
