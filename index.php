@@ -379,7 +379,7 @@ require "includes/navbar.php";
 
 </div>
 
-<?php require __DIR__ . "/../src/includes/report_modal.php"; ?>
+<?php require __DIR__ . "/includes/report_modal.php"; ?>
 
 <!-- ================= POST ITEM MODAL ================= -->
 

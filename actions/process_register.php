@@ -7,14 +7,12 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 $fullName = trim($_POST["full_name"] ?? "");
-$studentNumber = trim($_POST["student_number"] ?? "");
 $email = strtolower(trim($_POST["email"] ?? ""));
 $password = $_POST["password"] ?? "";
 $confirmPassword = $_POST["confirm_password"] ?? "";
 
 if (
     $fullName === "" ||
-    $studentNumber === "" ||
     $email === "" ||
     $password === "" ||
     $confirmPassword === ""
@@ -43,10 +41,10 @@ if ($password !== $confirmPassword) {
     exit;
 }
 
-/* Check whether the institutional email or student number is already registered. */
+/* Check whether the institutional email is already registered. */
 $checkQuery = "SELECT user_id
                FROM users
-               WHERE email = ? OR student_number = ?
+               WHERE email = ?
                LIMIT 1";
 
 $checkStmt = mysqli_prepare($conn, $checkQuery);
@@ -56,7 +54,7 @@ if (!$checkStmt) {
     exit;
 }
 
-mysqli_stmt_bind_param($checkStmt, "ss", $email, $studentNumber);
+mysqli_stmt_bind_param($checkStmt, "s", $email);
 mysqli_stmt_execute($checkStmt);
 mysqli_stmt_store_result($checkStmt);
 
@@ -76,8 +74,8 @@ $username = "pup_" . bin2hex(random_bytes(12));
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
 $query = "INSERT INTO users
-          (full_name, student_number, email, username, password)
-          VALUES (?, ?, ?, ?, ?)";
+          (full_name, email, username, password)
+          VALUES (?, ?, ?, ?)";
 
 $stmt = mysqli_prepare($conn, $query);
 
@@ -89,9 +87,8 @@ if (!$stmt) {
 
 mysqli_stmt_bind_param(
     $stmt,
-    "sssss",
+    "ssss",
     $fullName,
-    $studentNumber,
     $email,
     $username,
     $passwordHash

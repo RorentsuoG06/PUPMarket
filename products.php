@@ -189,9 +189,5 @@ require "includes/navbar.php";
 
 </div>
 
-<<<<<<< Updated upstream:products.php
-<?php require "includes/footer.php"; ?>
-=======
-<?php require __DIR__ . "/../src/includes/report_modal.php"; ?>
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>
->>>>>>> Stashed changes:public/products.php
+<?php require __DIR__ . "/includes/report_modal.php"; ?>
+<?php require __DIR__ . "/includes/footer.php"; ?>

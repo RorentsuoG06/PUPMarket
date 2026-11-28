@@ -1,8 +1,9 @@
 <?php
 mysqli_report(MYSQLI_REPORT_OFF);
-require_once __DIR__ . "/../../config/database.php";
-require_once __DIR__ . "/../../src/Middleware/auth.php";
-require_once __DIR__ . "/../../src/Services/NexconnService.php";
+require_once __DIR__ . "/../config/environment.php";
+require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../src/Middleware/auth.php";
+require_once __DIR__ . "/../src/Services/NexconnService.php";
 
 header("Content-Type: application/json; charset=UTF-8");
 header("Cache-Control: no-store, private");
@@ -40,9 +41,9 @@ if (!is_array($request)) {
     nexconnJsonResponse(400, ["success" => false, "message" => "Invalid chat request."]);
 }
 
-$appKey = trim((string) env("NEXCONN_APP_KEY", ""));
-$appSecret = trim((string) env("NEXCONN_APP_SECRET", ""));
-$region = strtoupper(trim((string) env("NEXCONN_REGION", "SG")));
+$appKey = trim(appEnv("NEXCONN_APP_KEY"));
+$appSecret = trim(appEnv("NEXCONN_APP_SECRET"));
+$region = strtoupper(trim(appEnv("NEXCONN_REGION", "SG")));
 $regions = [
     "SG" => ["https://api.sg-light-api.com", "SG"],
     "NA" => ["https://api.us-light-api.com", "NA"],

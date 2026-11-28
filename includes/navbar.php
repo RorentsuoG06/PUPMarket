@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../src/Middleware/auth.php";
+
 if (!isset($currentPage)) {
     $currentPage = "";
 }
@@ -74,8 +76,6 @@ if (!isset($currentPage)) {
 
                 <?php if (isset($_SESSION['user_id'])): ?>
 
-<<<<<<< Updated upstream:includes/navbar.php
-=======
                     <li class="nav-item">
                         <a class="nav-link <?= $currentPage === 'chats' ? 'active' : '' ?>"
                            href="chats.php">
@@ -92,7 +92,6 @@ if (!isset($currentPage)) {
                         </a>
                     </li>
 
->>>>>>> Stashed changes:src/includes/navbar.php
                     <li class="nav-item ms-lg-2">
                         <a class="btn btn-warning fw-bold"
                            href="logout.php">

@@ -12,7 +12,6 @@ $message = "";
 $messageType = "";
 
 $fullName = "";
-$studentNumber = "";
 $email = "";
 
 $status = $_GET["status"] ?? "";
@@ -30,7 +29,7 @@ if ($status === "empty") {
     $message = "Passwords do not match.";
     $messageType = "danger";
 } elseif ($status === "exists") {
-    $message = "That email or student number is already registered.";
+    $message = "That email is already registered.";
     $messageType = "danger";
 } elseif ($status === "failed") {
     $message = "Something went wrong while creating the account.";
@@ -96,28 +95,6 @@ require "includes/navbar.php";
                                    placeholder="Enter your full name"
                                    value="<?= htmlspecialchars($fullName) ?>"
                                    required>
-
-                        </div>
-
-                        <div class="mb-3">
-
-                            <label class="form-label" for="studentNumber">
-                                Student Number
-                            </label>
-
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="bi bi-person-vcard-fill"></i>
-                                </span>
-                                <input type="text"
-                                       class="form-control"
-                                       id="studentNumber"
-                                       name="student_number"
-                                       placeholder="Enter your student number"
-                                       value="<?= htmlspecialchars($studentNumber) ?>"
-                                       autocomplete="off"
-                                       required>
-                            </div>
 
                         </div>
 

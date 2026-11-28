@@ -232,7 +232,7 @@ Open:
 
 http://localhost/PUPMarket_PHP/login.php
 
-Use your registered @iskolarngbayan.pup.edu.ph email, student number, and password.
+Use your registered @iskolarngbayan.pup.edu.ph email and password.
 
 After successful login, you will be redirected to:
 

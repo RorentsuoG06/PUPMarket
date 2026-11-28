@@ -32,12 +32,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<<<<<<< Updated upstream:includes/footer.php
-<script src="js/script.js?v=2"></script>
-=======
 <script src="js/script.js?v=7"></script>
 <script src="js/reports.js?v=1"></script>
->>>>>>> Stashed changes:src/includes/footer.php
 
 </body>
 </html>

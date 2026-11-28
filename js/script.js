@@ -437,8 +437,6 @@
         });
     }
 
-<<<<<<< Updated upstream:js/script.js
-=======
     function setupMyListings() {
         const container = document.getElementById("myListingsContainer");
         const editForm = document.getElementById("editListingForm");
@@ -755,7 +753,6 @@
         return validate;
     }
 
->>>>>>> Stashed changes:public/js/script.js
     function setupAuthForms() {
         document.querySelectorAll("[data-otp-preview]").forEach(function (button) {
             button.addEventListener("click", function () {

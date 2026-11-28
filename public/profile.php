@@ -67,8 +67,8 @@ $memberSince = $createdAt ? date("F j, Y", strtotime($createdAt)) : "";
 $pageTitle = "My Profile | IskoFinds";
 $currentPage = "profile";
 
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
+require __DIR__ . "/../includes/header.php";
+require __DIR__ . "/../includes/navbar.php";
 mysqli_close($conn);
 ?>
 
@@ -295,4 +295,4 @@ mysqli_close($conn);
     </div>
 </section>
 
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>
+<?php require __DIR__ . "/../includes/footer.php"; ?>
