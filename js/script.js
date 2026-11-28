@@ -798,10 +798,52 @@
         form.addEventListener("submit", validateConfirmation);
     }
 
+    function setupLoginHeroAnimation() {
+        const hero = document.querySelector('.hero-section[data-login-success="true"]');
+        if (!hero) {
+            return;
+        }
+
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const welcome = document.createElement("section");
+        welcome.className = `login-welcome${reduceMotion ? " is-reduced-motion" : ""}`;
+        welcome.setAttribute("role", "status");
+        welcome.setAttribute("aria-live", "polite");
+        welcome.innerHTML = `
+            <div class="login-welcome__content">
+                <p class="login-welcome__eyebrow">PUP BIÑAN STUDENT MARKETPLACE</p>
+                <div class="login-welcome__visual" aria-hidden="true">
+                    <img src="images/login-welcome.png" alt="">
+                    <span class="login-welcome__item login-welcome__item--book"><i class="bi bi-book-half"></i></span>
+                    <span class="login-welcome__item login-welcome__item--bag"><i class="bi bi-bag-heart-fill"></i></span>
+                    <span class="login-welcome__item login-welcome__item--calculator"><i class="bi bi-calculator-fill"></i></span>
+                    <span class="login-welcome__item login-welcome__item--journal"><i class="bi bi-journal-bookmark-fill"></i></span>
+                </div>
+                <h1>Welcome back, <span>Iskolar!</span></h1>
+                <p class="login-welcome__message">Your campus marketplace is ready.</p>
+            </div>
+        `;
+
+        document.body.classList.add("login-welcome-active");
+        document.body.appendChild(welcome);
+        window.requestAnimationFrame(function () {
+            welcome.classList.add("is-visible");
+        });
+
+        window.setTimeout(function () {
+            welcome.classList.add("is-leaving");
+        }, reduceMotion ? 1100 : 2700);
+        window.setTimeout(function () {
+            welcome.remove();
+            document.body.classList.remove("login-welcome-active");
+        }, reduceMotion ? 1400 : 3250);
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         setupProductFeatures();
         setupItemListing();
         setupMyListings();
         setupAuthForms();
+        setupLoginHeroAnimation();
     });
 })();

@@ -73,6 +73,7 @@ if (
     $_SESSION["user_id"] = $userId;
     $_SESSION["full_name"] = $fullName;
     $_SESSION["username"] = $dbUsername;
+    $_SESSION["login_success"] = true;
 
 
     mysqli_stmt_close($stmt);
