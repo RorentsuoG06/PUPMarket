@@ -32,8 +32,17 @@ function rememberDatabaseConnection(): mysqli
 {
     global $conn;
 
-    if (!isset($conn) || !($conn instanceof mysqli)) {
-        require_once __DIR__ . "/../../config/database.php";
+    $needsConnection = !isset($conn) || !($conn instanceof mysqli);
+    if (!$needsConnection) {
+        try {
+            $needsConnection = empty($conn->thread_id);
+        } catch (Throwable $e) {
+            $needsConnection = true;
+        }
+    }
+
+    if ($needsConnection) {
+        require __DIR__ . "/../../config/database.php";
     }
 
     return $conn;
