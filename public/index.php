@@ -46,14 +46,19 @@ require __DIR__ . "/../src/includes/navbar.php";
 
                     </a>
 
-                    <button class="btn btn-outline-light btn-lg"
-                            data-bs-toggle="modal"
-                            data-bs-target="#postItemModal">
-
-                        <i class="bi bi-plus-circle"></i>
-                        Sell an Item
-
-                    </button>
+                    <?php if (isset($_SESSION["user_id"])): ?>
+                        <button class="btn btn-outline-light btn-lg"
+                                data-bs-toggle="modal"
+                                data-bs-target="#postItemModal">
+                            <i class="bi bi-plus-circle"></i>
+                            Sell an Item
+                        </button>
+                    <?php else: ?>
+                        <a class="btn btn-outline-light btn-lg" href="login.php">
+                            <i class="bi bi-plus-circle"></i>
+                            Sign in to Sell
+                        </a>
+                    <?php endif; ?>
 
                 </div>
 
@@ -209,6 +214,7 @@ require __DIR__ . "/../src/includes/navbar.php";
         <div class="row g-4"
              id="featuredProducts">
         </div>
+        <div id="productLoadError" class="alert alert-warning mt-4 d-none" role="alert"></div>
 
     </div>
 
@@ -318,7 +324,7 @@ require __DIR__ . "/../src/includes/navbar.php";
 
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body product-modal-details">
 
                 <img id="productImage"
                      src=""
@@ -357,12 +363,21 @@ require __DIR__ . "/../src/includes/navbar.php";
                 <button
                     type="button"
                     class="btn btn-pup"
-                    id="contactSellerBtn">
+                    id="contactSellerBtn"
+                    data-authenticated="<?= isset($_SESSION['user_id']) ? 'true' : 'false' ?>">
 
                     <i class="bi bi-chat"></i>
-                    Contact Seller
+                    Chat with Seller
 
                 </button>
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        id="reportListingBtn"
+                        data-authenticated="<?= isset($_SESSION['user_id']) ? 'true' : 'false' ?>">
+                    <i class="bi bi-flag"></i>
+                    Report
+                </button>
+                <p id="sellerChatStatus" class="small text-muted mb-0" aria-live="polite"></p>
 
             </div>
 
@@ -372,6 +387,7 @@ require __DIR__ . "/../src/includes/navbar.php";
 
 </div>
 
+<?php require __DIR__ . "/includes/report_modal.php"; ?>
 
 <!-- ================= POST ITEM MODAL ================= -->
 
@@ -396,7 +412,11 @@ require __DIR__ . "/../src/includes/navbar.php";
 
             <div class="modal-body">
 
-                <form id="postItemForm">
+                <?php if (isset($_SESSION["user_id"])): ?>
+                <form id="postItemForm"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      data-csrf-token="<?= htmlspecialchars(csrfToken()) ?>">
 
                     <div class="mb-3">
 
@@ -407,6 +427,8 @@ require __DIR__ . "/../src/includes/navbar.php";
                         <input type="text"
                                class="form-control"
                                id="itemName"
+                               name="name"
+                               maxlength="120"
                                required>
 
                     </div>
@@ -420,6 +442,7 @@ require __DIR__ . "/../src/includes/navbar.php";
 
                         <select class="form-select"
                                 id="itemCategory"
+                                name="category"
                                 required>
 
                             <option value="">
@@ -460,6 +483,7 @@ require __DIR__ . "/../src/includes/navbar.php";
                         <input type="number"
                                class="form-control"
                                id="itemPrice"
+                               name="price"
                                min="1"
                                step="0.01"
                                required>
@@ -475,6 +499,7 @@ require __DIR__ . "/../src/includes/navbar.php";
 
                         <select class="form-select"
                                 id="itemCondition"
+                                name="condition"
                                 required>
 
                             <option value="">
@@ -511,11 +536,12 @@ require __DIR__ . "/../src/includes/navbar.php";
                         <input type="file"
                                class="form-control"
                                id="itemImage"
-                               accept="image/*"
+                               name="image"
+                               accept="image/jpeg,image/png,image/webp"
                                required>
 
                         <div class="form-text">
-                            Upload a photo of the item you are selling.
+                            JPG, PNG, or WEBP up to 2MB.
                         </div>
 
                     </div>
@@ -544,35 +570,34 @@ require __DIR__ . "/../src/includes/navbar.php";
 
                         <textarea class="form-control"
                                   id="itemDescription"
+                                  name="description"
                                   rows="3"
+                                  maxlength="5000"
                                   required></textarea>
 
                     </div>
 
 
-                    <div class="mb-3">
+                    <p class="small text-muted mb-3">
+                        This listing will be linked to <?= htmlspecialchars($_SESSION["full_name"] ?? "your account") ?>.
+                    </p>
 
-                        <label class="form-label">
-                            Your Name
-                        </label>
-
-                        <input type="text"
-                               class="form-control"
-                               id="sellerName"
-                               required>
-
-                    </div>
+                    <div id="itemSubmitStatus" class="form-text mb-3" role="status" aria-live="polite"></div>
 
 
                     <button type="submit"
                             class="btn btn-pup w-100">
 
                         <i class="bi bi-upload"></i>
-                        Submit Listing
+                        Post Listing
 
                     </button>
 
                 </form>
+                <?php else: ?>
+                    <p class="text-muted mb-3">Sign in to post an item linked to your account.</p>
+                    <a class="btn btn-pup" href="login.php">Sign In</a>
+                <?php endif; ?>
 
             </div>
 

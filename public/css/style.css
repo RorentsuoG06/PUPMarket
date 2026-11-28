@@ -9,6 +9,7 @@
     --line: #ebe6e1;
     --shadow-sm: 0 8px 24px rgba(48, 34, 28, 0.07);
     --shadow-lg: 0 18px 48px rgba(48, 34, 28, 0.13);
+    --radius-card: 16px;
 }
 
 html {
@@ -20,7 +21,21 @@ body {
     background: var(--surface);
     color: var(--ink);
     font-family: Inter, "Segoe UI", Arial, sans-serif;
-    line-height: 1.65;
+    line-height: 1.55;
+}
+
+.btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.95rem;
+    line-height: 1.25;
+}
+
+.btn-lg {
+    min-height: 48px;
 }
 
 h1,
@@ -74,7 +89,7 @@ h6 {
 }
 
 .navbar {
-    min-height: 76px;
+    min-height: 68px;
     box-shadow: 0 4px 18px rgba(31, 15, 15, 0.12);
 }
 
@@ -89,8 +104,8 @@ h6 {
 }
 
 .navbar .nav-link {
-    margin: 0 0.2rem;
-    padding: 0.55rem 0.75rem !important;
+    margin: 0 0.15rem;
+    padding: 0.5rem 0.65rem !important;
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.95rem;
     font-weight: 550;
@@ -109,7 +124,7 @@ h6 {
 .hero-section {
     position: relative;
     overflow: hidden;
-    padding: clamp(5rem, 10vw, 8rem) 0;
+    padding: clamp(4rem, 8vw, 6.5rem) 0;
     background:
         radial-gradient(ellipse at 86% 20%, rgba(255, 223, 0, 0.16), transparent 32%),
         linear-gradient(120deg, #650000 0%, #850707 58%, #9c2020 100%);
@@ -450,8 +465,8 @@ h6 {
 }
 
 section.py-5 {
-    padding-top: clamp(3.5rem, 7vw, 5.5rem) !important;
-    padding-bottom: clamp(3.5rem, 7vw, 5.5rem) !important;
+    padding-top: clamp(2.75rem, 5vw, 4.5rem) !important;
+    padding-bottom: clamp(2.75rem, 5vw, 4.5rem) !important;
 }
 
 section.bg-light {
@@ -460,9 +475,10 @@ section.bg-light {
 
 .category-card {
     height: 100%;
-    padding: 1.75rem 1rem;
+    min-height: 174px;
+    padding: 1.5rem 1rem;
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: var(--radius-card);
     background: var(--surface);
     color: var(--ink);
     box-shadow: var(--shadow-sm);
@@ -496,7 +512,7 @@ section.bg-light {
 .product-card {
     overflow: hidden;
     border: 1px solid var(--line);
-    border-radius: 16px;
+    border-radius: var(--radius-card);
     background: var(--surface);
     box-shadow: 0 3px 14px rgba(48, 34, 28, 0.045);
     transition: transform 180ms ease, box-shadow 180ms ease;
@@ -510,7 +526,7 @@ section.bg-light {
 .product-image {
     display: block;
     width: 100%;
-    height: 210px;
+    height: clamp(165px, 18vw, 205px);
     background: var(--canvas);
     object-fit: cover;
 }
@@ -519,7 +535,8 @@ section.bg-light {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 1.1rem;
+    gap: 0.35rem;
+    padding: 1rem;
 }
 
 .product-card .badge {
@@ -532,8 +549,8 @@ section.bg-light {
 .product-card .card-title {
     display: -webkit-box;
     overflow: hidden;
-    min-height: 3.2rem;
-    margin-top: 0.75rem;
+    min-height: 3rem;
+    margin: 0.45rem 0 0;
     color: var(--ink);
     font-size: 1.05rem;
     font-weight: 700;
@@ -543,14 +560,14 @@ section.bg-light {
 }
 
 .product-card .product-price {
-    margin: 0.15rem 0 0.4rem;
+    margin: 0;
     color: var(--pup-maroon);
     font-size: 1.2rem;
     font-weight: 750;
 }
 
 .product-card .product-condition {
-    margin-bottom: 1rem;
+    margin: 0 0 0.5rem;
 }
 
 .product-card .btn {
@@ -558,7 +575,7 @@ section.bg-light {
 }
 
 .page-header {
-    padding: clamp(3.5rem, 8vw, 5.5rem) 0;
+    padding: clamp(2.75rem, 5vw, 4.25rem) 0;
     background:
         radial-gradient(ellipse at 85% 15%, rgba(255, 223, 0, 0.13), transparent 35%),
         linear-gradient(120deg, #650000, #8b1010);
@@ -597,7 +614,7 @@ section.bg-light {
 
 .about-icon {
     display: flex;
-    min-height: 300px;
+    min-height: 280px;
     align-items: center;
     justify-content: center;
     border: 1px solid var(--line);
@@ -611,9 +628,9 @@ section.bg-light {
 
 .info-card {
     height: 100%;
-    padding: 2rem;
+    padding: 1.75rem;
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: var(--radius-card);
     background: var(--surface);
     text-align: center;
     box-shadow: var(--shadow-sm);
@@ -661,9 +678,9 @@ section.bg-light {
 }
 
 .contact-form-card {
-    padding: clamp(1.5rem, 4vw, 2.5rem);
+    padding: clamp(1.25rem, 3vw, 2rem);
     border: 1px solid var(--line);
-    border-radius: 20px;
+    border-radius: var(--radius-card);
     background: var(--surface);
     box-shadow: var(--shadow-sm);
 }
@@ -675,14 +692,14 @@ section.bg-light {
 
 .auth-page {
     display: flex;
-    min-height: calc(100vh - 76px);
+    min-height: calc(100vh - 68px);
     align-items: center;
     background: var(--canvas);
 }
 
 .auth-page > .container {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
 }
 
 .auth-switch {
@@ -784,7 +801,7 @@ section.bg-light {
 }
 
 .auth-heading {
-    margin: 1.7rem 2rem 1.3rem;
+    margin: 1.5rem 2rem 1.25rem;
 }
 
 .auth-heading h2 {
@@ -806,11 +823,11 @@ section.bg-light {
 }
 
 .auth-card > .alert {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
 }
 
 .auth-card > p {
-    margin-bottom: 1.7rem !important;
+    margin-bottom: 1.4rem !important;
 }
 
 .auth-card .input-group > .form-control {
@@ -928,12 +945,13 @@ section.bg-light {
 }
 
 .auth-submit {
-    min-height: 48px;
+    min-height: 46px;
     border-radius: 12px;
     box-shadow: 0 8px 18px rgba(48, 34, 28, 0.12);
 }
 
 .form-label {
+    margin-bottom: 0.4rem;
     color: #45403d;
     font-size: 0.92rem;
     font-weight: 650;
@@ -942,9 +960,18 @@ section.bg-light {
 .form-control,
 .form-select,
 .input-group-text {
-    min-height: 46px;
+    min-height: 44px;
     border-color: #ded8d2;
     border-radius: 10px;
+}
+
+.form-control,
+.form-select {
+    padding: 0.55rem 0.8rem;
+}
+
+.form-control[type="file"] {
+    padding: 0.45rem 0.7rem;
 }
 
 .input-group > .input-group-text {
@@ -986,11 +1013,237 @@ section.bg-light {
 
 .product-modal-image {
     width: 100%;
-    height: 280px;
-    margin-bottom: 1.25rem;
+    height: clamp(200px, 48vw, 280px);
+    margin-bottom: 1rem;
     border-radius: 14px;
     background: var(--canvas);
     object-fit: contain;
+}
+
+.product-modal-details p {
+    margin-bottom: 0.65rem;
+}
+
+.profile-avatar,
+.profile-avatar-placeholder {
+    width: 112px;
+    height: 112px;
+}
+
+.profile-avatar-placeholder {
+    color: var(--pup-maroon);
+    font-size: 2.5rem;
+}
+
+.profile-page .contact-form-card.auth-card {
+    overflow: visible;
+    padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.profile-page .auth-card > form {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.profile-page .auth-card > p {
+    margin: 0 0 0.5rem !important;
+}
+
+.listing-management-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.listing-management-actions .btn {
+    flex: 1 1 5rem;
+}
+
+.chat-panel {
+    overflow: hidden;
+    padding: clamp(0.75rem, 2vw, 1.25rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.chat-status {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0 0 0.75rem;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--canvas);
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.chat-status[data-state="loading"]::before {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 1rem;
+    border: 2px solid rgba(128, 0, 0, 0.2);
+    border-top-color: var(--pup-maroon);
+    border-radius: 50%;
+    animation: chat-status-spin 800ms linear infinite;
+    content: "";
+}
+
+.chat-status[data-state="connected"]::before {
+    color: #34734a;
+    content: "✓";
+    font-weight: 800;
+}
+
+.chat-status[data-state="empty"] {
+    border-color: #f0df89;
+    background: #fff9d6;
+    color: var(--ink);
+}
+
+.chat-status[data-state="empty"]::before {
+    color: var(--pup-maroon);
+    content: "i";
+    font-weight: 800;
+}
+
+.chat-status[data-state="error"] {
+    border-color: #ead0cc;
+    background: #f8ecea;
+    color: var(--pup-maroon);
+}
+
+.chat-status[data-state="error"]::before {
+    color: var(--pup-maroon);
+    content: "!";
+    font-weight: 800;
+}
+
+.chat-unread-summary {
+    display: inline-flex;
+    min-height: 2rem;
+    align-items: center;
+    margin: 0 0 0.8rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.82rem;
+}
+
+.chat-unread-summary[data-state="unread"] {
+    border-color: rgba(128, 0, 0, 0.2);
+    background: #f4ece8;
+    color: var(--pup-maroon);
+    font-weight: 700;
+}
+
+@keyframes chat-status-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.nexconn-chat-app {
+    width: 100%;
+    height: min(72vh, 760px);
+    min-height: 520px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+}
+
+.nexconn-chat-root,
+nc-chat-ui-app-provider {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+}
+
+.report-form-status {
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    background: var(--canvas);
+}
+
+.moderation-reports-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.moderation-report-card {
+    gap: 0.8rem;
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sm);
+}
+
+.moderation-report-target {
+    margin: 0.8rem 0 0;
+    color: var(--pup-maroon);
+    font-weight: 700;
+}
+
+.moderation-report-details {
+    margin: 0;
+    padding: 0.75rem;
+    border-left: 3px solid var(--pup-gold);
+    background: var(--canvas);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.moderation-review-form {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.7fr) minmax(220px, 1.3fr) auto;
+    align-items: end;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+.moderation-review-field {
+    min-width: 0;
+}
+
+.moderation-status-pending {
+    background: #fff2bd;
+    color: #6a4b00;
+}
+
+.moderation-status-reviewed {
+    background: #f4ece8;
+    color: var(--pup-maroon);
+}
+
+.moderation-status-actioned {
+    background: var(--pup-maroon);
+    color: #fff;
+}
+
+.moderation-status-dismissed {
+    background: #eee9e6;
+    color: var(--muted);
+}
+
+.moderation-empty-state {
+    padding: 2rem 1rem;
+    color: var(--muted);
+    text-align: center;
+}
+
+@media (max-width: 767.98px) {
+    .moderation-review-form {
+        grid-template-columns: 1fr;
+    }
 }
 
 #imagePreview {
@@ -1013,7 +1266,7 @@ section.bg-light {
 }
 
 .footer {
-    padding: 2.75rem 0 1.5rem;
+    padding: 2.25rem 0 1.25rem;
     background: #340000;
     color: rgba(255, 255, 255, 0.75);
 }
@@ -1041,12 +1294,20 @@ section.bg-light {
         margin: 0.15rem 0;
     }
 
+    .navbar-collapse {
+        padding: 0.35rem 0 0.75rem;
+    }
+
     .navbar-nav .btn {
         margin-top: 0.5rem;
     }
 }
 
 @media (max-width: 767.98px) {
+    .row.g-5 {
+        --bs-gutter-x: 1.5rem;
+    }
+
     .hero-section {
         text-align: center;
     }
@@ -1063,17 +1324,16 @@ section.bg-light {
     }
 
     .product-image {
-        height: 185px;
+        height: 160px;
     }
 
     .about-icon {
-        min-height: 230px;
+        min-height: 210px;
         font-size: 7rem;
     }
 
     .auth-heading {
-        margin-right: 1.25rem;
-        margin-left: 1.25rem;
+        margin: 1.25rem 1.25rem 1rem;
     }
 
     .auth-card > .alert,
@@ -1081,6 +1341,29 @@ section.bg-light {
     .auth-card > p {
         margin-right: 1.25rem;
         margin-left: 1.25rem;
+    }
+
+    .auth-card > form,
+    .auth-card > .alert {
+        margin-right: 1.25rem;
+        margin-left: 1.25rem;
+    }
+
+    .category-card {
+        min-height: 154px;
+        padding: 1.25rem 0.75rem;
+    }
+
+    .nexconn-chat-app {
+        height: 68vh;
+        min-height: 440px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .nexconn-chat-app {
+        height: 70vh;
+        min-height: 400px;
     }
 }
 

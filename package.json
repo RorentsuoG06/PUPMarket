@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "build:chat": "esbuild src/js/nexconn-chat.js --bundle --format=esm --platform=browser --target=es2015 --minify --external:path --outfile=public/js/nexconn-chat.bundle.js"
+  },
+  "dependencies": {
+    "@nexconn/chat": "26.5.0",
+    "@nexconn/chatui": "26.5.0",
+    "@nexconn/engine": "26.5.0",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
