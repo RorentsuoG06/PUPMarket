@@ -305,32 +305,116 @@
         const imageInput = document.getElementById("itemImage");
         const preview = document.getElementById("imagePreview");
         const previewContainer = document.getElementById("imagePreviewContainer");
+        const dropPlaceholder = document.getElementById("imageDropPlaceholder");
+        const dropzone = document.getElementById("postItemDropzone");
+        const descriptionInput = document.getElementById("itemDescription");
+        const descriptionCount = document.getElementById("itemDescriptionCount");
+        const status = document.getElementById("itemSubmitStatus");
+        const modalElement = document.getElementById("postItemModal");
+        const form = document.getElementById("postItemForm");
+
+        function setItemStatus(message, variant) {
+            if (!status) {
+                return;
+            }
+            if (!message) {
+                status.textContent = "";
+                status.className = "alert d-none mt-3 mb-0";
+                return;
+            }
+            status.textContent = message;
+            status.className = `alert alert-${variant} mt-3 mb-0`;
+        }
+
+        function resetPreview() {
+            if (preview) {
+                preview.src = "";
+            }
+            previewContainer?.classList.add("d-none");
+            dropPlaceholder?.classList.remove("d-none");
+        }
+
+        function showImagePreview(file) {
+            if (!file) {
+                resetPreview();
+                return;
+            }
+
+            if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                setItemStatus("Please choose a JPG, PNG, or WEBP image.", "danger");
+                if (imageInput) {
+                    imageInput.value = "";
+                }
+                resetPreview();
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                setItemStatus("Please choose an image smaller than 2MB.", "danger");
+                if (imageInput) {
+                    imageInput.value = "";
+                }
+                resetPreview();
+                return;
+            }
+
+            setItemStatus("", "info");
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                if (preview) {
+                    preview.src = event.target.result;
+                }
+                previewContainer?.classList.remove("d-none");
+                dropPlaceholder?.classList.add("d-none");
+            };
+            reader.readAsDataURL(file);
+        }
 
         if (imageInput && preview && previewContainer) {
             imageInput.addEventListener("change", function () {
-                const file = imageInput.files[0];
-                if (!file) {
-                    previewContainer.classList.add("d-none");
-                    return;
-                }
-
-                if (!file.type.startsWith("image/")) {
-                    alert("Please select an image file.");
-                    imageInput.value = "";
-                    previewContainer.classList.add("d-none");
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    preview.src = event.target.result;
-                    previewContainer.classList.remove("d-none");
-                };
-                reader.readAsDataURL(file);
+                showImagePreview(imageInput.files[0]);
             });
         }
 
-        const form = document.getElementById("postItemForm");
+        if (dropzone && imageInput) {
+            ["dragenter", "dragover"].forEach(function (eventName) {
+                dropzone.addEventListener(eventName, function (event) {
+                    event.preventDefault();
+                    dropzone.classList.add("is-dragover");
+                });
+            });
+
+            ["dragleave", "drop"].forEach(function (eventName) {
+                dropzone.addEventListener(eventName, function (event) {
+                    event.preventDefault();
+                    dropzone.classList.remove("is-dragover");
+                });
+            });
+
+            dropzone.addEventListener("drop", function (event) {
+                const droppedFile = event.dataTransfer?.files?.[0];
+                if (!droppedFile) {
+                    return;
+                }
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(droppedFile);
+                imageInput.files = dataTransfer.files;
+                showImagePreview(droppedFile);
+            });
+        }
+
+        if (descriptionInput && descriptionCount) {
+            const updateCount = function () {
+                descriptionCount.textContent = `${descriptionInput.value.length} / 5000`;
+            };
+            descriptionInput.addEventListener("input", updateCount);
+            updateCount();
+        }
+
+        modalElement?.addEventListener("show.bs.modal", function () {
+            setItemStatus("", "info");
+        });
+
         if (!form) {
             return;
         }
@@ -344,54 +428,35 @@
             const condition = document.getElementById("itemCondition").value;
             const description = document.getElementById("itemDescription").value.trim();
             const file = imageInput?.files[0];
-            const status = document.getElementById("itemSubmitStatus");
             const submitButton = form.querySelector('button[type="submit"]');
 
             if (!name || !category || !price || !condition || !description) {
-                if (status) {
-                    status.textContent = "Please fill in all required fields.";
-                    status.className = "form-text mb-3 text-danger";
-                }
+                setItemStatus("Please fill in all required fields.", "danger");
                 return;
             }
 
             const numericPrice = Number(price);
             if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
-                if (status) {
-                    status.textContent = "Price must be greater than 0.";
-                    status.className = "form-text mb-3 text-danger";
-                }
+                setItemStatus("Price must be greater than 0.", "danger");
                 return;
             }
 
             if (!file) {
-                if (status) {
-                    status.textContent = "Please upload a product photo.";
-                    status.className = "form-text mb-3 text-danger";
-                }
+                setItemStatus("Please upload a product photo.", "danger");
                 return;
             }
 
             if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-                if (status) {
-                    status.textContent = "Use a JPG, PNG, or WEBP image.";
-                    status.className = "form-text mb-3 text-danger";
-                }
+                setItemStatus("Use a JPG, PNG, or WEBP image.", "danger");
                 return;
             }
 
             if (file.size > 2 * 1024 * 1024) {
-                if (status) {
-                    status.textContent = "Please choose an image smaller than 2MB.";
-                    status.className = "form-text mb-3 text-danger";
-                }
+                setItemStatus("Please choose an image smaller than 2MB.", "danger");
                 return;
             }
 
-            if (status) {
-                status.textContent = "Publishing your listing…";
-                status.className = "form-text mb-3";
-            }
+            setItemStatus("Publishing your listing…", "info");
             if (submitButton) {
                 submitButton.disabled = true;
             }
@@ -402,7 +467,13 @@
                     headers: { "X-CSRF-Token": form.dataset.csrfToken || "" },
                     body: new FormData(form)
                 });
-                const result = await response.json();
+                const rawBody = await response.text();
+                let result = null;
+                try {
+                    result = JSON.parse(rawBody);
+                } catch {
+                    throw new Error("Server returned an unexpected response while saving your listing.");
+                }
                 if (!response.ok || !result.success || !result.product) {
                     throw new Error(result.message || "Your listing could not be published.");
                 }
@@ -411,24 +482,23 @@
                 displayProducts(products);
                 displayFeaturedProducts();
                 form.reset();
-                previewContainer?.classList.add("d-none");
+                resetPreview();
+                if (descriptionCount) {
+                    descriptionCount.textContent = "0 / 5000";
+                }
+                setItemStatus("", "info");
 
-                const modalElement = document.getElementById("postItemModal");
                 if (modalElement) {
                     bootstrap.Modal.getInstance(modalElement)?.hide();
                 }
 
-                if (window.location.pathname.includes("index.php")) {
-                    window.location.href = "products.php";
-                }
+                window.location.href = "products.php";
             } catch (error) {
                 console.error("Marketplace listing could not be saved.", error);
-                if (status) {
-                    status.textContent = error instanceof Error
-                        ? error.message
-                        : "Your listing could not be published.";
-                    status.className = "form-text mb-3 text-danger";
-                }
+                setItemStatus(
+                    error instanceof Error ? error.message : "Your listing could not be published.",
+                    "danger"
+                );
             } finally {
                 if (submitButton) {
                     submitButton.disabled = false;
