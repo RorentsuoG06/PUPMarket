@@ -1523,3 +1523,348 @@ nc-chat-ui-app-provider {
 .post-item-modal__seller i {
     color: var(--pup-maroon);
 }
+/* ═══════════════════════════════════════════════════
+   PROFILE PAGE  — added in v11
+   Sections: hero · identity card · form cards · upload zone
+═══════════════════════════════════════════════════ */
+
+/* ── Hero banner ──────────────────────────────────── */
+.profile-hero {
+    position: relative;
+    background: linear-gradient(135deg, var(--pup-maroon-dark, #5f0000) 0%, var(--pup-maroon, #800000) 60%, #a0001a 100%);
+    overflow: visible;
+    margin-bottom: 7rem; /* space for avatar overflow */
+}
+
+.profile-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.profile-hero__cover {
+    height: 180px;
+}
+
+.profile-hero__body {
+    position: absolute;
+    bottom: -6rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+    padding-bottom: 0;
+}
+
+/* ── Hero Avatar ──────────────────────────────────── */
+.profile-hero__avatar,
+.profile-hero__avatar--placeholder {
+    width: 148px;
+    height: 148px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    flex-shrink: 0;
+    object-fit: cover;
+    background: var(--canvas, #f8f6f3);
+}
+
+.profile-hero__avatar--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: var(--pup-maroon, #800000);
+    font-size: 3.5rem;
+}
+
+/* ── Hero Identity text ───────────────────────────── */
+.profile-hero__identity {
+    padding-bottom: 1rem;
+    color: #fff;
+    min-width: 0;
+}
+
+.profile-hero__name {
+    font-size: clamp(1.3rem, 3vw, 1.75rem);
+    font-weight: 800;
+    margin-bottom: 0.1rem;
+    line-height: 1.2;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.profile-hero__handle {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin-bottom: 0.6rem;
+}
+
+.profile-hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+/* ── Chips ────────────────────────────────────────── */
+.profile-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.profile-chip--verified {
+    background: rgba(255, 223, 0, 0.22);
+    border-color: rgba(255, 223, 0, 0.55);
+    color: #fff9c0;
+}
+
+/* ── Content area below hero ──────────────────────── */
+.profile-content {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* ── Generic profile card ─────────────────────────── */
+.profile-card {
+    background: var(--surface, #fff);
+    border-radius: var(--radius-card, 16px);
+    border: 1px solid var(--line, #ebe6e1);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+/* ── Card header accent ───────────────────────────── */
+.profile-card__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--line, #ebe6e1);
+    background: rgba(128, 0, 0, 0.03);
+}
+
+.profile-card__header--danger {
+    background: rgba(220, 53, 69, 0.03);
+    border-bottom-color: rgba(220, 53, 69, 0.12);
+}
+
+.profile-card__header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(128, 0, 0, 0.1);
+    color: var(--pup-maroon, #800000);
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.profile-card__header-icon--danger {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.profile-card__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.1rem;
+    color: var(--ink, #292524);
+}
+
+.profile-card__subtitle {
+    font-size: 0.8rem;
+    color: var(--muted, #716b68);
+    margin: 0;
+}
+
+.profile-card__body {
+    padding: 1.5rem;
+}
+
+/* ── Identity card (left column) ─────────────────── */
+.profile-identity-card {
+    padding: 1.5rem;
+}
+
+.profile-identity-card__bio {
+    position: relative;
+    padding: 0.9rem 1rem 0.9rem 1.5rem;
+    margin-bottom: 1.25rem;
+    border-left: 3px solid var(--pup-maroon, #800000);
+    background: rgba(128, 0, 0, 0.04);
+    border-radius: 0 10px 10px 0;
+    font-size: 0.88rem;
+    color: var(--muted, #716b68);
+    font-style: italic;
+}
+
+.profile-identity-card__quote-icon {
+    position: absolute;
+    top: -0.4rem;
+    left: 0.5rem;
+    font-size: 2rem;
+    color: var(--pup-maroon, #800000);
+    opacity: 0.18;
+    line-height: 1;
+}
+
+/* ── Meta list ────────────────────────────────────── */
+.profile-meta-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.profile-meta-list__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.5rem;
+    border-bottom: 1px solid var(--line, #ebe6e1);
+    font-size: 0.85rem;
+}
+
+.profile-meta-list__item:last-child {
+    border-bottom: none;
+}
+
+.profile-meta-list__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(128, 0, 0, 0.08);
+    color: var(--pup-maroon, #800000);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.profile-meta-list__label {
+    font-weight: 600;
+    color: var(--muted, #716b68);
+    white-space: nowrap;
+    min-width: 70px;
+}
+
+.profile-meta-list__value {
+    color: var(--ink, #292524);
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Upload zone ──────────────────────────────────── */
+.profile-upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 1.5rem 1rem;
+    border: 2px dashed var(--line, #ebe6e1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: center;
+    background: var(--canvas, #f8f6f3);
+}
+
+.profile-upload-zone:hover,
+.profile-upload-zone.is-over {
+    border-color: var(--pup-maroon, #800000);
+    background: rgba(128, 0, 0, 0.04);
+}
+
+.profile-upload-zone__icon {
+    font-size: 2rem;
+    color: var(--pup-maroon, #800000);
+    opacity: 0.6;
+    margin-bottom: 0.25rem;
+}
+
+.profile-upload-zone__label {
+    font-size: 0.88rem;
+    color: var(--ink, #292524);
+    margin: 0;
+}
+
+.profile-upload-zone__link {
+    color: var(--pup-maroon, #800000);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.profile-upload-zone__hint {
+    font-size: 0.78rem;
+    color: var(--muted, #716b68);
+    margin: 0;
+}
+
+.profile-upload-zone__input {
+    display: none;
+}
+
+/* ── Responsive tweaks ────────────────────────────── */
+@media (max-width: 991.98px) {
+    .profile-hero {
+        margin-bottom: 8.5rem;
+    }
+
+    .profile-hero__cover {
+        height: 140px;
+    }
+
+    .profile-hero__body {
+        flex-direction: column;
+        align-items: flex-start;
+        bottom: -8rem;
+        gap: 0.75rem;
+    }
+
+    .profile-hero__avatar,
+    .profile-hero__avatar--placeholder {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-hero__identity {
+        padding-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .profile-hero {
+        margin-bottom: 10rem;
+    }
+
+    .profile-hero__cover {
+        height: 120px;
+    }
+
+    .profile-hero__body {
+        bottom: -9.5rem;
+    }
+
+    .profile-card__body {
+        padding: 1rem;
+    }
+}
