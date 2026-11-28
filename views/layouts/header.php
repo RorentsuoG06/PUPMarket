@@ -1,10 +1,32 @@
 <?php
-require_once __DIR__ . "/../Middleware/auth.php";
+require_once SRC_PATH . "/Middleware/auth.php";
+restoreRememberedSession();
 
+if (!isset($pageTitle)) {
+    $pageTitle = "PUPMarket";
+}
 if (!isset($currentPage)) {
     $currentPage = "";
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><?= htmlspecialchars($pageTitle) ?></title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          href="assets/css/custom.css?v=9">
+</head>
+<body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-pup sticky-top">
     <div class="container">

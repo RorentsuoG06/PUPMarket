@@ -1,10 +1,3 @@
-<?php
-$pageTitle = "Products | PUPMarket";
-$currentPage = "products";
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="page-header">
     <div class="container text-center">
         <h1 class="fw-bold">Items for Sale</h1>
@@ -189,5 +182,4 @@ require __DIR__ . "/../src/includes/navbar.php";
 
 </div>
 
-<?php require __DIR__ . "/../src/includes/report_modal.php"; ?>
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>
+<?php require VIEWS_PATH . "/partials/report_modal.php"; ?>

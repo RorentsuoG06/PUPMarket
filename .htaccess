@@ -2,7 +2,7 @@
     RewriteEngine On
 
     # Block direct access to private directories and .env files
-    RewriteRule ^(\.env|config/|src/|database/) - [F,L,NC]
+    RewriteRule ^(\.env|config/|src/|views/|database/) - [F,L,NC]
 
     # Forward all other requests to public/
     RewriteCond %{REQUEST_URI} !/public/

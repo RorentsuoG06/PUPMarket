@@ -1,17 +1,3 @@
-<?php
-require_once __DIR__ . "/../src/Middleware/auth.php";
-ensureSessionStarted();
-restoreRememberedSession();
-requireAuth("login.php");
-
-$pageTitle = "My Listings | PUPMarket";
-$currentPage = "my_listings";
-$csrfToken = csrfToken();
-
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="page-header">
     <div class="container d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
@@ -157,5 +143,4 @@ require __DIR__ . "/../src/includes/navbar.php";
     </div>
 </div>
 
-<?php require __DIR__ . "/../src/includes/post_item_modal.php"; ?>
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>
+<?php require VIEWS_PATH . "/partials/post_item_modal.php"; ?>

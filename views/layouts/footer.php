@@ -32,8 +32,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/script.js?v=10"></script>
-<script src="js/reports.js?v=1"></script>
+<script src="assets/js/main.js?v=11"></script>
+<script src="assets/js/reports.js?v=1"></script>
 
 </body>
 </html>

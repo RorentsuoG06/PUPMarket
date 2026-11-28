@@ -1,21 +1,3 @@
-<?php
-require_once __DIR__ . "/../src/Middleware/auth.php";
-ensureSessionStarted();
-requireAuth("login.php");
-
-$productId = filter_input(INPUT_GET, "product", FILTER_VALIDATE_INT);
-if ($productId === false || $productId < 1) {
-    $productId = null;
-}
-
-$pageTitle = "Chats | PUPMarket";
-$currentPage = "chats";
-$csrfToken = csrfToken();
-
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="page-header">
     <div class="container">
         <h1 class="fw-bold mb-2">Your Chats</h1>
@@ -43,5 +25,4 @@ require __DIR__ . "/../src/includes/navbar.php";
     </div>
 </main>
 
-<script type="module" src="js/nexconn-chat.bundle.js?v=5"></script>
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>
+<script type="module" src="assets/js/nexconn-chat.bundle.js?v=5"></script>

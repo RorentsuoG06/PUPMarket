@@ -1,10 +1,3 @@
-<?php
-$pageTitle = "About | PUPMarket";
-$currentPage = "about";
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="page-header">
     <div class="container text-center">
         <h1 class="fw-bold">
@@ -156,4 +149,3 @@ require __DIR__ . "/../src/includes/navbar.php";
 
 </section>
 
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>

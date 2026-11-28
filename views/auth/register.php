@@ -1,62 +1,3 @@
-<?php
-require_once __DIR__ . "/../src/Middleware/auth.php";
-ensureSessionStarted();
-restoreRememberedSession();
-
-if (isset($_SESSION["user_id"])) {
-    header("Location: index.php");
-    exit;
-}
-
-$message = "";
-$messageType = "";
-
-$fullName = $_SESSION["register_old"]["full_name"] ?? "";
-$email = $_SESSION["register_old"]["email"] ?? "";
-unset($_SESSION["register_old"]);
-
-$status = $_GET["status"] ?? "";
-
-if ($status === "empty") {
-    $message = "Please fill in all required fields.";
-    $messageType = "danger";
-} elseif ($status === "email") {
-    $message = "Use a valid @iskolarngbayan.pup.edu.ph email address.";
-    $messageType = "danger";
-} elseif ($status === "password") {
-    $message = "Password must be at least 6 characters.";
-    $messageType = "danger";
-} elseif ($status === "match") {
-    $message = "Passwords do not match.";
-    $messageType = "danger";
-} elseif ($status === "exists") {
-    $message = "That email is already registered.";
-    $messageType = "danger";
-} elseif ($status === "otp_required") {
-    $message = "Please enter the 6-digit verification code sent to your email.";
-    $messageType = "danger";
-} elseif ($status === "otp_expired") {
-    $message = "Your verification code has expired or was not found. Please request a new one.";
-    $messageType = "danger";
-} elseif ($status === "otp_invalid") {
-    $message = "The verification code you entered is incorrect.";
-    $messageType = "danger";
-} elseif ($status === "otp_attempts") {
-    $message = "Too many incorrect attempts. Please request a new verification code.";
-    $messageType = "danger";
-} elseif ($status === "failed") {
-    $message = "Something went wrong while creating the account.";
-    $messageType = "danger";
-}
-
-$pageTitle = "Register | IskoFinds";
-$currentPage = "";
-$showOtpBox = in_array($status, ["otp_required", "otp_expired", "otp_invalid", "otp_attempts"], true);
-
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="py-5 auth-page">
 
     <div class="container">
@@ -268,4 +209,3 @@ require __DIR__ . "/../src/includes/navbar.php";
 
 </section>
 
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>

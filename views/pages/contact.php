@@ -1,30 +1,3 @@
-<?php
-$pageTitle = "Contact | PUPMarket";
-$currentPage = "contact";
-
-$message = "";
-$messageType = "";
-
-$status = $_GET["status"] ?? "";
-
-if ($status === "success") {
-    $message = "Your inquiry has been successfully submitted.";
-    $messageType = "success";
-} elseif ($status === "empty") {
-    $message = "Please fill in all required fields.";
-    $messageType = "danger";
-} elseif ($status === "email") {
-    $message = "Please enter a valid email address.";
-    $messageType = "danger";
-} elseif ($status === "failed") {
-    $message = "Something went wrong while saving your inquiry.";
-    $messageType = "danger";
-}
-
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="page-header">
 
     <div class="container text-center">
@@ -235,4 +208,3 @@ require __DIR__ . "/../src/includes/navbar.php";
 
 </section>
 
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>

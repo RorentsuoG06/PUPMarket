@@ -1,41 +1,3 @@
-<?php
-require_once __DIR__ . "/../src/Middleware/auth.php";
-
-guestOnly("index.php");
-
-$email = $_SESSION["reset_old_email"] ?? "";
-unset($_SESSION["reset_old_email"]);
-
-$message = "";
-$messageType = "";
-$status = $_GET["status"] ?? "";
-
-$statusMap = [
-    "empty" => ["Please fill in all required fields.", "danger"],
-    "email" => ["Use a valid @iskolarngbayan.pup.edu.ph email address.", "danger"],
-    "not_found" => ["No account is registered with that PUP Webmail.", "danger"],
-    "password" => ["New password must be at least 6 characters.", "danger"],
-    "match" => ["New passwords do not match.", "danger"],
-    "otp_required" => ["Please enter the 6-digit reset code sent to your email.", "danger"],
-    "otp_expired" => ["Your reset code has expired or was not found. Please request a new one.", "danger"],
-    "otp_invalid" => ["The reset code you entered is incorrect.", "danger"],
-    "otp_attempts" => ["Too many incorrect attempts. Please request a new reset code.", "danger"],
-    "failed" => ["Something went wrong while resetting your password.", "danger"]
-];
-
-if (isset($statusMap[$status])) {
-    [$message, $messageType] = $statusMap[$status];
-}
-
-$showResetFields = in_array($status, ["otp_required", "otp_expired", "otp_invalid", "otp_attempts", "password", "match"], true);
-
-$pageTitle = "Forgot Password | IskoFinds";
-$currentPage = "";
-
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="py-5 auth-page">
     <div class="container">
         <div class="row justify-content-center">
@@ -176,4 +138,3 @@ require __DIR__ . "/../src/includes/navbar.php";
     </div>
 </section>
 
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>

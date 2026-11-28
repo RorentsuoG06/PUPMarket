@@ -1,57 +1,3 @@
-<?php
-require_once __DIR__ . "/../src/Middleware/auth.php";
-ensureSessionStarted();
-restoreRememberedSession();
-
-if (isset($_SESSION["user_id"])) {
-    header("Location: index.php");
-    exit;
-}
-
-$message = "";
-$messageType = "";
-
-$status = $_GET["status"] ?? "";
-
-if (isset($_GET["registered"])) {
-    $message = "Registration successful. You can now log in.";
-    $messageType = "success";
-} elseif (isset($_GET["logout"])) {
-    $message = "You have been signed out.";
-    $messageType = "success";
-} elseif ($status === "password_reset") {
-    $message = "Your password has been reset. You can now log in.";
-    $messageType = "success";
-} elseif ($status === "empty") {
-    $message = "Please enter your PUP webmail and password.";
-    $messageType = "danger";
-} elseif ($status === "email") {
-    $message = "Use your @iskolarngbayan.pup.edu.ph email address.";
-    $messageType = "danger";
-} elseif ($status === "invalid") {
-    $message = "The email or password is incorrect.";
-    $messageType = "danger";
-} elseif ($status === "oauth_unconfigured") {
-    $message = "Microsoft sign-in is not configured yet. Set MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET in config/microsoft_oauth.php.";
-    $messageType = "warning";
-} elseif ($status === "oauth_failed") {
-    $message = "Microsoft sign-in could not be completed. Please try again.";
-    $messageType = "danger";
-} elseif ($status === "failed") {
-    $message = "Something went wrong while logging in.";
-    $messageType = "danger";
-} elseif ($status === "remember_failed") {
-    $message = "We couldn't enable Remember Me. Please try again or sign in without it.";
-    $messageType = "danger";
-}
-
-$pageTitle = "Login | IskoFinds";
-$currentPage = "";
-
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="py-5 auth-page">
 
     <div class="container">
@@ -201,4 +147,3 @@ require __DIR__ . "/../src/includes/navbar.php";
 
 </section>
 
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>

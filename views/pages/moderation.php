@@ -1,18 +1,3 @@
-<?php
-require_once __DIR__ . "/../src/Middleware/auth.php";
-ensureSessionStarted();
-restoreRememberedSession();
-requireAuth("login.php");
-requireAdmin();
-
-$pageTitle = "Moderation | PUPMarket";
-$currentPage = "moderation";
-$csrfToken = csrfToken();
-
-require __DIR__ . "/../src/includes/header.php";
-require __DIR__ . "/../src/includes/navbar.php";
-?>
-
 <section class="page-header">
     <div class="container">
         <h1 class="fw-bold mb-2">Moderation Reports</h1>
@@ -64,4 +49,3 @@ require __DIR__ . "/../src/includes/navbar.php";
     </div>
 </main>
 
-<?php require __DIR__ . "/../src/includes/footer.php"; ?>
