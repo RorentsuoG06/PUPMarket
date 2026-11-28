@@ -13,9 +13,18 @@ require __DIR__ . "/../src/includes/navbar.php";
 ?>
 
 <section class="page-header">
-    <div class="container">
-        <h1 class="fw-bold mb-2">My Listings</h1>
-        <p>Update or remove items you have posted.</p>
+    <div class="container d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <h1 class="fw-bold mb-2">My Listings</h1>
+            <p class="mb-0">Update or remove items you have posted.</p>
+        </div>
+        <button type="button"
+                class="btn btn-warning fw-bold"
+                data-bs-toggle="modal"
+                data-bs-target="#postItemModal">
+            <i class="bi bi-plus-circle"></i>
+            Post an Item
+        </button>
     </div>
 </section>
 
@@ -30,7 +39,13 @@ require __DIR__ . "/../src/includes/navbar.php";
             <i class="bi bi-bag fs-1 text-muted" aria-hidden="true"></i>
             <h2 class="h4 mt-3">You have no listings yet</h2>
             <p class="text-muted">Post an item to see it here.</p>
-            <a class="btn btn-pup" href="index.php">Post an Item</a>
+            <button type="button"
+                    class="btn btn-pup"
+                    data-bs-toggle="modal"
+                    data-bs-target="#postItemModal">
+                <i class="bi bi-plus-circle"></i>
+                Post an Item
+            </button>
         </div>
 
         <div id="myListingsContainer" class="row g-4"></div>
@@ -142,4 +157,5 @@ require __DIR__ . "/../src/includes/navbar.php";
     </div>
 </div>
 
+<?php require __DIR__ . "/../src/includes/post_item_modal.php"; ?>
 <?php require __DIR__ . "/../src/includes/footer.php"; ?>

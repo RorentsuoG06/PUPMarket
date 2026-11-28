@@ -492,7 +492,11 @@
                     bootstrap.Modal.getInstance(modalElement)?.hide();
                 }
 
-                window.location.href = "products.php";
+                if (document.getElementById("myListingsContainer")) {
+                    window.dispatchEvent(new CustomEvent("pupmarket:listing-created"));
+                } else {
+                    window.location.href = "products.php";
+                }
             } catch (error) {
                 console.error("Marketplace listing could not be saved.", error);
                 setItemStatus(
@@ -710,6 +714,10 @@
             if (currentPage < totalPages) {
                 loadListings(currentPage + 1);
             }
+        });
+
+        window.addEventListener("pupmarket:listing-created", function () {
+            loadListings(1, "Listing published.");
         });
 
         loadListings(1);
