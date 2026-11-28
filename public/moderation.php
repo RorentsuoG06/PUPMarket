@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/src/Middleware/auth.php";
+require_once __DIR__ . "/../src/Middleware/auth.php";
 ensureSessionStarted();
 restoreRememberedSession();
 requireAuth("login.php");
@@ -9,8 +9,8 @@ $pageTitle = "Moderation | PUPMarket";
 $currentPage = "moderation";
 $csrfToken = csrfToken();
 
-require __DIR__ . "/includes/header.php";
-require __DIR__ . "/includes/navbar.php";
+require __DIR__ . "/../src/includes/header.php";
+require __DIR__ . "/../src/includes/navbar.php";
 ?>
 
 <section class="page-header">
@@ -64,4 +64,4 @@ require __DIR__ . "/includes/navbar.php";
     </div>
 </main>
 
-<?php require __DIR__ . "/includes/footer.php"; ?>
+<?php require __DIR__ . "/../src/includes/footer.php"; ?>

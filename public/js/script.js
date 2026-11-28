@@ -1,122 +1,8 @@
 (function () {
-    const defaultProducts = [
-        {
-            id: 1,
-            name: "Data Structures in Java Book",
-            price: 550,
-            category: "Books",
-            condition: "Good",
-            description: "Programming book with minimal highlights.",
-            seller: "Valora Mae Lagarnia",
-            image: "images/datastructuresinjava.jpg"
-        },
-        {
-            id: 2,
-            name: "Modern Database Management Book",
-            price: 780,
-            category: "Books",
-            condition: "Good",
-            description: "Database management textbook useful for studying database concepts and systems.",
-            seller: "Valora Mae Lagarnia",
-            image: "images/mdm.jpg"
-        },
-        {
-            id: 3,
-            name: "OOP Reviewer",
-            price: 50,
-            category: "Books",
-            condition: "Like New",
-            description: "Printed reviewer for 1st semester midterm exam.",
-            seller: "Cadey Torralba",
-            image: "images/oopreviewer.jpg"
-        },
-        {
-            id: 4,
-            name: "PUPBC Uniform Set - Women",
-            price: 800,
-            category: "Uniforms",
-            condition: "Like New",
-            description: "Large Size. Uniform set with pants. Contact me for the other details.",
-            seller: "Jessica Mananes",
-            image: "images/unifset.jpg"
-        },
-        {
-            id: 5,
-            name: "PE Uniform Top only",
-            price: 320,
-            category: "Uniforms",
-            condition: "Good",
-            description: "Size medium. All goods pa.",
-            seller: "Jeremy Guillermo",
-            image: "images/peunif.jpg"
-        },
-        {
-            id: 6,
-            name: "CASIO Scientific Calculator",
-            price: 700,
-            category: "Electronics",
-            condition: "Good",
-            description: "Scientific calculator in good working condition, suitable for school and mathematical use.",
-            seller: "PUPMarket Seller",
-            image: "images/calc.jpg"
-        },
-        {
-            id: 7,
-            name: "Logitech Wireless Mouse",
-            price: 680,
-            category: "Electronics",
-            condition: "Good",
-            description: "Wireless mouse in good working condition. Suitable for laptops, computers, and everyday school use.",
-            seller: "PUPMarket Seller",
-            image: "images/mouse.jpg"
-        },
-        {
-            id: 8,
-            name: "1 Ream A4 Hard Copy Bond paper",
-            price: 280,
-            category: "School Supplies",
-            condition: "New",
-            description: "1 ream of A4 bond paper containing 500 sheets. Suitable for printing school requirements and documents.",
-            seller: "PUPMarket Seller",
-            image: "images/bndpaper.jpg"
-        },
-        {
-            id: 9,
-            name: "Mica Paper Set",
-            price: 280,
-            category: "School Supplies",
-            condition: "New",
-            description: "Brand new mica paper set suitable for school projects, covers, and other printing needs.",
-            seller: "PUPMarket Seller",
-            image: "images/mica.jpg"
-        },
-        {
-            id: 10,
-            name: "Homemade Cookies",
-            price: 10,
-            category: "Others",
-            condition: "New",
-            description: "Freshly made homemade cookies available in Matcha, Choco, and Red Velvet flavors. ₱10 per piece.",
-            seller: "Miyuki Espiritu",
-            image: "images/cookie.jpg"
-        }
-    ];
-
     let products = [];
-
-    function getProducts() {
-        const savedProducts = localStorage.getItem("pupmarketProducts");
-        if (savedProducts) {
-            return JSON.parse(savedProducts);
-        }
-
-        localStorage.setItem("pupmarketProducts", JSON.stringify(defaultProducts));
-        return defaultProducts;
-    }
-
-    function saveProducts() {
-        localStorage.setItem("pupmarketProducts", JSON.stringify(products));
-    }
+    let productPage = 1;
+    let productLoadSequence = 0;
+    let productSearchTimer = null;
 
     function createProductCard(product) {
         const column = document.createElement("div");
@@ -206,6 +92,9 @@
         const productSeller = document.getElementById("productSeller");
         const image = document.getElementById("productImage");
         const modalElement = document.getElementById("productModal");
+        const contactSellerButton = document.getElementById("contactSellerBtn");
+        const reportListingButton = document.getElementById("reportListingBtn");
+        const sellerChatStatus = document.getElementById("sellerChatStatus");
 
         if (!productName || !productPrice || !productCategory || !productCondition ||
             !productDescription || !productSeller || !image || !modalElement) {
@@ -224,37 +113,133 @@
             image.src = "images/no-image.jpg";
         };
 
+        if (contactSellerButton) {
+            const isAuthenticated = contactSellerButton.dataset.authenticated === "true";
+            contactSellerButton.dataset.listingId = product.listingId || "";
+            contactSellerButton.dataset.canContact = product.canContactSeller ? "true" : "false";
+            contactSellerButton.disabled = !product.listingId || Boolean(product.isOwnListing);
+
+            if (product.isOwnListing) {
+                contactSellerButton.innerHTML = '<i class="bi bi-person-check"></i> Your Listing';
+                if (sellerChatStatus) {
+                    sellerChatStatus.textContent = "You cannot start a chat with yourself.";
+                }
+            } else if (!product.listingId) {
+                contactSellerButton.innerHTML = '<i class="bi bi-chat"></i> Chat Unavailable';
+                if (sellerChatStatus) {
+                    sellerChatStatus.textContent = "This demo item is not linked to a PUPMarket seller account.";
+                }
+            } else if (!isAuthenticated) {
+                contactSellerButton.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Sign In to Chat';
+                contactSellerButton.disabled = false;
+                if (sellerChatStatus) {
+                    sellerChatStatus.textContent = "Sign in to contact this seller.";
+                }
+            } else {
+                contactSellerButton.innerHTML = '<i class="bi bi-chat"></i> Chat with Seller';
+                if (sellerChatStatus) {
+                    sellerChatStatus.textContent = "";
+                }
+            }
+        }
+
+        if (reportListingButton) {
+            reportListingButton.dataset.listingId = product.listingId || "";
+            reportListingButton.disabled = !product.listingId || Boolean(product.isOwnListing);
+            reportListingButton.title = product.isOwnListing
+                ? "You cannot report your own listing."
+                : "";
+        }
+
         bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
 
-    function filterProducts() {
+    async function loadProducts(page = 1) {
         const searchInput = document.getElementById("searchInput");
         const categoryFilter = document.getElementById("categoryFilter");
         const sortFilter = document.getElementById("sortFilter");
+        const productContainer = document.getElementById("productContainer");
+        const featuredContainer = document.getElementById("featuredProducts");
+        const productLoadError = document.getElementById("productLoadError");
 
-        if (!searchInput || !categoryFilter) {
+        if (!productContainer && !featuredContainer) {
             return;
         }
 
-        const searchValue = searchInput.value.toLowerCase().trim();
-        const categoryValue = categoryFilter.value;
-
-        const filteredProducts = products.filter(function (product) {
-            const matchesSearch = product.name.toLowerCase().includes(searchValue);
-            const matchesCategory =
-                categoryValue === "all" || product.category === categoryValue;
-            return matchesSearch && matchesCategory;
+        const sequence = ++productLoadSequence;
+        const params = new URLSearchParams({
+            page: String(page),
+            per_page: "12"
         });
-
-        if (sortFilter?.value === "low") {
-            filteredProducts.sort((a, b) => Number(a.price) - Number(b.price));
-        } else if (sortFilter?.value === "high") {
-            filteredProducts.sort((a, b) => Number(b.price) - Number(a.price));
-        } else if (sortFilter?.value === "name") {
-            filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+        const search = searchInput?.value.trim() || "";
+        const category = categoryFilter?.value || "all";
+        const sort = sortFilter?.value || "default";
+        if (search) {
+            params.set("q", search);
+        }
+        if (category !== "all") {
+            params.set("category", category);
+        }
+        if (sort !== "default") {
+            params.set("sort", sort);
         }
 
-        displayProducts(filteredProducts);
+        try {
+            const response = await fetch(`api/products.php?${params.toString()}`, {
+                headers: { "Accept": "application/json" }
+            });
+            const result = await response.json();
+            if (
+                !response.ok ||
+                !result.success ||
+                !Array.isArray(result.products) ||
+                !result.pagination
+            ) {
+                throw new Error(result.message || "Unable to load marketplace listings.");
+            }
+            if (sequence !== productLoadSequence) {
+                return;
+            }
+
+            products = result.products;
+            productPage = Number(result.pagination.page);
+            productLoadError?.classList.add("d-none");
+
+            if (productContainer) {
+                displayProducts(products);
+            }
+            if (featuredContainer) {
+                displayFeaturedProducts();
+            }
+
+            const pagination = document.getElementById("productsPagination");
+            const pageStatus = document.getElementById("productsPageStatus");
+            const previousButton = document.getElementById("productsPrevious");
+            const nextButton = document.getElementById("productsNext");
+            const totalPages = Number(result.pagination.totalPages);
+            pagination?.classList.toggle("d-none", totalPages <= 1);
+            if (pageStatus) {
+                pageStatus.textContent =
+                    `Page ${productPage} of ${totalPages} · ${Number(result.pagination.total)} items`;
+            }
+            if (previousButton) {
+                previousButton.disabled = productPage <= 1;
+            }
+            if (nextButton) {
+                nextButton.disabled = productPage >= totalPages;
+            }
+        } catch (error) {
+            if (sequence !== productLoadSequence) {
+                return;
+            }
+            console.error("Marketplace listings could not be loaded.", error);
+            if (productLoadError) {
+                productLoadError.textContent = error instanceof Error
+                    ? error.message
+                    : "Unable to load marketplace listings.";
+                productLoadError.classList.remove("d-none");
+            }
+        }
     }
 
     function setupProductFeatures() {
@@ -265,22 +250,28 @@
             return;
         }
 
-        products = getProducts();
-        displayProducts(products);
-        displayFeaturedProducts();
-
         const searchInput = document.getElementById("searchInput");
         const categoryFilter = document.getElementById("categoryFilter");
         const sortFilter = document.getElementById("sortFilter");
 
-        searchInput?.addEventListener("input", filterProducts);
-        categoryFilter?.addEventListener("change", filterProducts);
-        sortFilter?.addEventListener("change", filterProducts);
+        searchInput?.addEventListener("input", function () {
+            window.clearTimeout(productSearchTimer);
+            productSearchTimer = window.setTimeout(() => loadProducts(1), 250);
+        });
+        categoryFilter?.addEventListener("change", () => loadProducts(1));
+        sortFilter?.addEventListener("change", () => loadProducts(1));
+        document.getElementById("productsPrevious")?.addEventListener("click", function () {
+            if (productPage > 1) {
+                loadProducts(productPage - 1);
+            }
+        });
+        document.getElementById("productsNext")?.addEventListener("click", function () {
+            loadProducts(productPage + 1);
+        });
 
         const category = new URLSearchParams(window.location.search).get("category");
         if (category && categoryFilter) {
             categoryFilter.value = category;
-            filterProducts();
         }
 
         document.addEventListener("click", function (event) {
@@ -291,11 +282,23 @@
         });
 
         document.getElementById("contactSellerBtn")?.addEventListener("click", function () {
-            alert(
-                "Please contact the seller through the information provided.\n\n" +
-                "Note: This is a draft project. The messaging feature will be added in the next update."
-            );
+            const contactButton = document.getElementById("contactSellerBtn");
+            const listingId = contactButton?.dataset.listingId;
+            if (!listingId || contactButton?.disabled) {
+                return;
+            }
+            if (contactButton.dataset.authenticated !== "true") {
+                window.location.href = "login.php";
+                return;
+            }
+            if (contactButton.dataset.canContact !== "true") {
+                return;
+            }
+
+            window.location.href = `chats.php?product=${encodeURIComponent(listingId)}`;
         });
+
+        loadProducts(1);
     }
 
     function setupItemListing() {
@@ -332,7 +335,7 @@
             return;
         }
 
-        form.addEventListener("submit", function (event) {
+        form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
             const name = document.getElementById("itemName").value.trim();
@@ -340,49 +343,71 @@
             const price = document.getElementById("itemPrice").value.trim();
             const condition = document.getElementById("itemCondition").value;
             const description = document.getElementById("itemDescription").value.trim();
-            const seller = document.getElementById("sellerName").value.trim();
             const file = imageInput?.files[0];
+            const status = document.getElementById("itemSubmitStatus");
+            const submitButton = form.querySelector('button[type="submit"]');
 
-            if (!name || !category || !price || !condition || !description || !seller) {
-                alert("Please fill in all required fields.");
+            if (!name || !category || !price || !condition || !description) {
+                if (status) {
+                    status.textContent = "Please fill in all required fields.";
+                    status.className = "form-text mb-3 text-danger";
+                }
                 return;
             }
 
             const numericPrice = Number(price);
             if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
-                alert("Price must be greater than 0.");
+                if (status) {
+                    status.textContent = "Price must be greater than 0.";
+                    status.className = "form-text mb-3 text-danger";
+                }
                 return;
             }
 
             if (!file) {
-                alert("Please upload a product photo.");
+                if (status) {
+                    status.textContent = "Please upload a product photo.";
+                    status.className = "form-text mb-3 text-danger";
+                }
                 return;
             }
 
-            if (!file.type.startsWith("image/")) {
-                alert("Please select an image file.");
+            if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                if (status) {
+                    status.textContent = "Use a JPG, PNG, or WEBP image.";
+                    status.className = "form-text mb-3 text-danger";
+                }
                 return;
             }
 
             if (file.size > 2 * 1024 * 1024) {
-                alert("Please choose an image smaller than 2MB.");
+                if (status) {
+                    status.textContent = "Please choose an image smaller than 2MB.";
+                    status.className = "form-text mb-3 text-danger";
+                }
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = function (loadEvent) {
-                products.unshift({
-                    id: Date.now(),
-                    name,
-                    price: numericPrice,
-                    category,
-                    condition,
-                    description,
-                    seller,
-                    image: loadEvent.target.result
-                });
+            if (status) {
+                status.textContent = "Publishing your listing…";
+                status.className = "form-text mb-3";
+            }
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
 
-                saveProducts();
+            try {
+                const response = await fetch("api/products.php", {
+                    method: "POST",
+                    headers: { "X-CSRF-Token": form.dataset.csrfToken || "" },
+                    body: new FormData(form)
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success || !result.product) {
+                    throw new Error(result.message || "Your listing could not be published.");
+                }
+
+                products.unshift(result.product);
                 displayProducts(products);
                 displayFeaturedProducts();
                 form.reset();
@@ -393,14 +418,231 @@
                     bootstrap.Modal.getInstance(modalElement)?.hide();
                 }
 
-                alert("Your item has been successfully posted!");
-
                 if (window.location.pathname.includes("index.php")) {
                     window.location.href = "products.php";
                 }
-            };
-            reader.readAsDataURL(file);
+            } catch (error) {
+                console.error("Marketplace listing could not be saved.", error);
+                if (status) {
+                    status.textContent = error instanceof Error
+                        ? error.message
+                        : "Your listing could not be published.";
+                    status.className = "form-text mb-3 text-danger";
+                }
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
+            }
         });
+    }
+
+    function setupMyListings() {
+        const container = document.getElementById("myListingsContainer");
+        const editForm = document.getElementById("editListingForm");
+        if (!container || !editForm) {
+            return;
+        }
+
+        const status = document.getElementById("myListingsStatus");
+        const emptyState = document.getElementById("myListingsEmpty");
+        const pagination = document.getElementById("myListingsPagination");
+        const pageStatus = document.getElementById("myListingsPageStatus");
+        const previousButton = document.getElementById("myListingsPrevious");
+        const nextButton = document.getElementById("myListingsNext");
+        const modalElement = document.getElementById("editListingModal");
+        let listings = [];
+        let currentPage = 1;
+        let totalPages = 1;
+
+        function setStatus(message, type = "info") {
+            if (!status) {
+                return;
+            }
+            status.textContent = message;
+            status.className = `alert alert-${type}`;
+        }
+
+        function makeManagedCard(product) {
+            const column = createProductCard(product);
+            const body = column.querySelector(".card-body");
+            body.querySelector("button[data-product-id]")?.remove();
+
+            const actions = document.createElement("div");
+            actions.className = "listing-management-actions";
+
+            const editButton = document.createElement("button");
+            editButton.type = "button";
+            editButton.className = "btn btn-outline-pup";
+            editButton.dataset.editListing = String(product.listingId);
+            editButton.textContent = "Edit";
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "btn btn-outline-danger";
+            deleteButton.dataset.deleteListing = String(product.listingId);
+            deleteButton.textContent = "Delete";
+
+            actions.append(editButton, deleteButton);
+            body.append(actions);
+            return column;
+        }
+
+        async function loadListings(page = currentPage, successMessage = "") {
+            setStatus("Loading your listings…", "info");
+            try {
+                const params = new URLSearchParams({
+                    mine: "1",
+                    page: String(page),
+                    per_page: "12"
+                });
+                const response = await fetch(`api/products.php?${params.toString()}`, {
+                    headers: { "Accept": "application/json" }
+                });
+                const result = await response.json();
+                if (
+                    !response.ok ||
+                    !result.success ||
+                    !Array.isArray(result.products) ||
+                    !result.pagination
+                ) {
+                    throw new Error(result.message || "Unable to load your listings.");
+                }
+
+                listings = result.products;
+                currentPage = Number(result.pagination.page);
+                totalPages = Number(result.pagination.totalPages);
+                container.replaceChildren(...listings.map(makeManagedCard));
+                const isEmpty = Number(result.pagination.total) === 0;
+                emptyState?.classList.toggle("d-none", !isEmpty);
+                pagination?.classList.toggle("d-none", totalPages <= 1);
+                if (pageStatus) {
+                    pageStatus.textContent =
+                        `Page ${currentPage} of ${totalPages} · ${Number(result.pagination.total)} listings`;
+                }
+                if (previousButton) {
+                    previousButton.disabled = currentPage <= 1;
+                }
+                if (nextButton) {
+                    nextButton.disabled = currentPage >= totalPages;
+                }
+                if (successMessage) {
+                    setStatus(successMessage, "success");
+                } else {
+                    status?.classList.add("d-none");
+                }
+            } catch (error) {
+                console.error("Your marketplace listings could not be loaded.", error);
+                setStatus(
+                    error instanceof Error ? error.message : "Unable to load your listings.",
+                    "danger"
+                );
+            }
+        }
+
+        function sendListingAction(formData) {
+            return fetch("api/products.php", {
+                method: "POST",
+                headers: { "X-CSRF-Token": editForm.dataset.csrfToken || "" },
+                body: formData
+            }).then(async function (response) {
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || "Unable to save the listing.");
+                }
+                return result;
+            });
+        }
+
+        container.addEventListener("click", async function (event) {
+            const editButton = event.target.closest("[data-edit-listing]");
+            if (editButton) {
+                const listing = listings.find(
+                    (item) => String(item.listingId) === editButton.dataset.editListing
+                );
+                if (!listing) {
+                    return;
+                }
+
+                editForm.querySelector('[name="listing_id"]').value = String(listing.listingId);
+                editForm.querySelector('[name="name"]').value = listing.name;
+                editForm.querySelector('[name="category"]').value = listing.category;
+                editForm.querySelector('[name="price"]').value = String(listing.price);
+                editForm.querySelector('[name="condition"]').value = listing.condition;
+                editForm.querySelector('[name="description"]').value = listing.description;
+                editForm.querySelector('[name="image"]').value = "";
+                bootstrap.Modal.getOrCreateInstance(modalElement).show();
+                return;
+            }
+
+            const deleteButton = event.target.closest("[data-delete-listing]");
+            if (!deleteButton) {
+                return;
+            }
+
+            const listingId = deleteButton.dataset.deleteListing;
+            const listing = listings.find((item) => String(item.listingId) === listingId);
+            if (!listing || !window.confirm(`Delete "${listing.name}"? This cannot be undone.`)) {
+                return;
+            }
+
+            deleteButton.disabled = true;
+            setStatus("Removing listing…", "info");
+            const formData = new FormData();
+            formData.set("action", "delete");
+            formData.set("listing_id", listingId);
+            try {
+                await sendListingAction(formData);
+                await loadListings(currentPage, "Listing removed.");
+            } catch (error) {
+                console.error("Marketplace listing could not be removed.", error);
+                setStatus(
+                    error instanceof Error ? error.message : "Unable to remove the listing.",
+                    "danger"
+                );
+                deleteButton.disabled = false;
+            }
+        });
+
+        editForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            if (!editForm.reportValidity()) {
+                return;
+            }
+
+            const submitButton = editForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            setStatus("Saving listing…", "info");
+            const formData = new FormData(editForm);
+            formData.set("action", "update");
+            try {
+                await sendListingAction(formData);
+                bootstrap.Modal.getInstance(modalElement)?.hide();
+                editForm.reset();
+                await loadListings(currentPage, "Listing updated.");
+            } catch (error) {
+                console.error("Marketplace listing could not be updated.", error);
+                setStatus(
+                    error instanceof Error ? error.message : "Unable to update the listing.",
+                    "danger"
+                );
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+
+        previousButton?.addEventListener("click", function () {
+            if (currentPage > 1) {
+                loadListings(currentPage - 1);
+            }
+        });
+        nextButton?.addEventListener("click", function () {
+            if (currentPage < totalPages) {
+                loadListings(currentPage + 1);
+            }
+        });
+
+        loadListings(1);
     }
 
     function createOtpRequester({ button, emailInput, statusEl, otpInput, endpoint, defaultLabel, resendLabel }) {
@@ -762,6 +1004,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         setupProductFeatures();
         setupItemListing();
+        setupMyListings();
         setupAuthForms();
         setupAuthTabAnimation();
         setupLoginHeroAnimation();

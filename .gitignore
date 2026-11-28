@@ -1,4 +1,6 @@
 .env
-public/uploads/
+node_modules/
+public/uploads/*
+!public/uploads/.htaccess
 .DS_Store
 Thumbs.db

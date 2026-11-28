@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../Middleware/auth.php";
+
 if (!isset($currentPage)) {
     $currentPage = "";
 }
@@ -40,6 +42,24 @@ if (!isset($currentPage)) {
                     </a>
                 </li>
 
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li class="nav-item">
+                        <a class="nav-link <?= $currentPage === 'my_listings' ? 'active' : '' ?>"
+                           href="my_listings.php">
+                            My Listings
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['user_id']) && isAdmin()): ?>
+                    <li class="nav-item">
+                        <a class="nav-link <?= $currentPage === 'moderation' ? 'active' : '' ?>"
+                           href="moderation.php">
+                            Moderation
+                        </a>
+                    </li>
+                <?php endif; ?>
+
                 <li class="nav-item">
                     <a class="nav-link <?= $currentPage === 'about' ? 'active' : '' ?>"
                        href="about.php">
@@ -55,6 +75,14 @@ if (!isset($currentPage)) {
                 </li>
 
                 <?php if (isset($_SESSION['user_id'])): ?>
+
+                    <li class="nav-item">
+                        <a class="nav-link <?= $currentPage === 'chats' ? 'active' : '' ?>"
+                           href="chats.php">
+                            <i class="bi bi-chat-dots"></i>
+                            Chats
+                        </a>
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link <?= $currentPage === 'profile' ? 'active' : '' ?>"

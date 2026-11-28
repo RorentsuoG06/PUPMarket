@@ -26,6 +26,7 @@ require __DIR__ . "/../src/includes/navbar.php";
                     <input type="text"
                            class="form-control"
                            id="searchInput"
+                           maxlength="120"
                            placeholder="Search items...">
                 </div>
             </div>
@@ -65,6 +66,7 @@ require __DIR__ . "/../src/includes/navbar.php";
         <div class="row g-4"
              id="productContainer">
         </div>
+        <div id="productLoadError" class="alert alert-warning mt-4 d-none" role="alert"></div>
 
         <div id="noResults"
              class="text-center py-5 d-none">
@@ -80,6 +82,28 @@ require __DIR__ . "/../src/includes/navbar.php";
             </p>
 
         </div>
+
+        <nav id="productsPagination"
+             class="d-none mt-4"
+             aria-label="Product pages">
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <button type="button"
+                        class="btn btn-outline-pup"
+                        id="productsPrevious"
+                        aria-label="Previous page">
+                    Previous
+                </button>
+                <span id="productsPageStatus"
+                      class="small text-muted"
+                      aria-live="polite"></span>
+                <button type="button"
+                        class="btn btn-outline-pup"
+                        id="productsNext"
+                        aria-label="Next page">
+                    Next
+                </button>
+            </div>
+        </nav>
 
     </div>
 </section>
@@ -103,7 +127,7 @@ require __DIR__ . "/../src/includes/navbar.php";
 
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body product-modal-details">
 
                 <img id="productImage"
                      src=""
@@ -141,12 +165,21 @@ require __DIR__ . "/../src/includes/navbar.php";
 
                 <button type="button"
                         class="btn btn-pup"
-                        id="contactSellerBtn">
+                        id="contactSellerBtn"
+                        data-authenticated="<?= isset($_SESSION['user_id']) ? 'true' : 'false' ?>">
 
                     <i class="bi bi-chat"></i>
-                    Contact Seller
+                    Chat with Seller
 
                 </button>
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        id="reportListingBtn"
+                        data-authenticated="<?= isset($_SESSION['user_id']) ? 'true' : 'false' ?>">
+                    <i class="bi bi-flag"></i>
+                    Report
+                </button>
+                <p id="sellerChatStatus" class="small text-muted mb-0" aria-live="polite"></p>
 
             </div>
 
@@ -156,4 +189,5 @@ require __DIR__ . "/../src/includes/navbar.php";
 
 </div>
 
+<?php require __DIR__ . "/../src/includes/report_modal.php"; ?>
 <?php require __DIR__ . "/../src/includes/footer.php"; ?>

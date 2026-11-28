@@ -8,6 +8,26 @@ function ensureSessionStarted(): void
     }
 }
 
+function csrfToken(): string
+{
+    ensureSessionStarted();
+
+    if (empty($_SESSION["csrf_token"])) {
+        $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION["csrf_token"];
+}
+
+function isValidCsrfToken(?string $candidate): bool
+{
+    ensureSessionStarted();
+
+    return isset($_SESSION["csrf_token"]) &&
+        is_string($candidate) &&
+        hash_equals($_SESSION["csrf_token"], $candidate);
+}
+
 function rememberDatabaseConnection(): mysqli
 {
     global $conn;
@@ -184,11 +204,57 @@ function isAuthenticated(): bool
     return isset($_SESSION["user_id"]);
 }
 
+function isAdmin(): bool
+{
+    if (!isAuthenticated()) {
+        return false;
+    }
+
+    static $adminStatusByUser = [];
+    $userId = (int) $_SESSION["user_id"];
+    if (array_key_exists($userId, $adminStatusByUser)) {
+        return $adminStatusByUser[$userId];
+    }
+
+    $connection = rememberDatabaseConnection();
+    $stmt = mysqli_prepare(
+        $connection,
+        "SELECT is_admin FROM users WHERE user_id = ? LIMIT 1"
+    );
+    if (!$stmt) {
+        error_log("Unable to prepare administrator access check.");
+        return false;
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $userId);
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log("Unable to check administrator access: " . mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        return false;
+    }
+
+    $isAdmin = 0;
+    mysqli_stmt_bind_result($stmt, $isAdmin);
+    $found = mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+    $adminStatusByUser[$userId] = $found && (int) $isAdmin === 1;
+
+    return $adminStatusByUser[$userId];
+}
+
 function requireAuth(string $redirectTo = "login.php"): void
 {
     if (!isAuthenticated()) {
         header("Location: " . $redirectTo);
         exit;
+    }
+}
+
+function requireAdmin(): void
+{
+    if (!isAdmin()) {
+        http_response_code(403);
+        exit("Administrator access required.");
     }
 }
 

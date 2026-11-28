@@ -1,9 +1,9 @@
 <?php
 mysqli_report(MYSQLI_REPORT_OFF);
-require_once __DIR__ . "/../config/environment.php";
-require_once __DIR__ . "/../config/database.php";
-require_once __DIR__ . "/../src/Middleware/auth.php";
-require_once __DIR__ . "/../src/Services/NexconnService.php";
+require_once __DIR__ . "/../../config/environment.php";
+require_once __DIR__ . "/../../config/database.php";
+require_once __DIR__ . "/../../src/Middleware/auth.php";
+require_once __DIR__ . "/../../src/Services/NexconnService.php";
 
 header("Content-Type: application/json; charset=UTF-8");
 header("Cache-Control: no-store, private");
